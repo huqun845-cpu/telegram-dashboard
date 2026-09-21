@@ -125,6 +125,7 @@ async function rateLimit() {
 
   const meta = { ...existing };
   let ok = 0, fail = 0, rateLimited = false;
+  const dead = new Set();   // 404：仓库已删除/改名，不再计入「待抓取」
 
   for (const t of targets) {
     if (rateLimited) { fail++; continue; }
@@ -133,6 +134,7 @@ async function rateLimit() {
       if (r.error) {
         console.warn(`  ✗ ${t.id.padEnd(18)} ${r.error}`);
         delete meta[t.id];
+        if (r.error.includes('不存在')) dead.add(t.id);
         fail++;
         if (r.error.includes('限流')) rateLimited = true;
       } else {
@@ -155,15 +157,23 @@ async function rateLimit() {
   await writeFile(META_FILE, JSON.stringify(meta, null, 2), 'utf8');
   await writeFile(path.join(DIR, 'meta.generated.js'), banner + 'window.GITHUB_META = ' + JSON.stringify(meta, null, 2) + ';\n', 'utf8');
 
-  const missing = all.filter(t => !isOk(meta[t.id]));
+  // 已 404 的仓库不算「待抓取」，否则每天都会提示一个永远抓不到的仓库
+  const missing = all.filter(t => !isOk(meta[t.id]) && !dead.has(t.id));
   console.log(`\n✅ 本次成功 ${ok}，失败 ${fail}`);
   console.log(`📊 累计覆盖 ${okCount} / ${all.length} 个仓库 —— 刷新面板页面即可看到真实更新时间/Star/License。`);
+  if (dead.size) {
+    console.log(`\n🚫 ${dead.size} 个仓库已失效（GitHub 返回 404，仓库被删或改名），不再重试：`);
+    console.log(`   ${[...dead].join(', ')}`);
+    console.log(`   → 面板里这些条目已标注「仓库已不存在」`);
+  }
   if (missing.length) {
     console.log(`\n⏳ 还剩 ${missing.length} 个未抓取。配额恢复后继续（自动跳过已完成的）：`);
     console.log(`   node fetch-github-meta.mjs --missing`);
     if (rl.reset) console.log(`   配额重置时间：${new Date(rl.reset * 1000).toLocaleString()}`);
     console.log(`   💡 更快的办法：export GITHUB_TOKEN=ghp_xxx 后一次跑完`);
-  } else {
+  } else if (!dead.size) {
     console.log('\n🎉 全部仓库数据已补齐。');
+  } else {
+    console.log(`\n🎉 其余 ${all.length - dead.size} 个仓库数据已全部补齐。`);
   }
 })();

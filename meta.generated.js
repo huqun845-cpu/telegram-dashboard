@@ -1,5 +1,5 @@
 /* meta.generated.js — 由 fetch-github-meta.mjs 自动生成
- * 生成时间：9/21/2026, 2:58:23 PM
+ * 生成时间：9/21/2026, 3:16:46 PM
  * 已有真实数据：88 / 89 个仓库
  */
 window.GITHUB_META = {
@@ -74,10 +74,10 @@ window.GITHUB_META = {
   },
   "langbot": {
     "pushedAt": "2026-09-20T16:48:35Z",
-    "updatedAt": "2026-09-21T04:59:46Z",
+    "updatedAt": "2026-09-21T07:15:03Z",
     "createdAt": "2022-12-07T08:48:02Z",
-    "stars": 17930,
-    "forks": 1602,
+    "stars": 17933,
+    "forks": 1603,
     "openIssues": 119,
     "license": "Apache-2.0",
     "licenseKind": "permissive",
@@ -510,7 +510,7 @@ window.GITHUB_META = {
     "updatedAt": "2026-09-19T19:54:08Z",
     "createdAt": "2026-09-11T13:38:49Z",
     "stars": 40,
-    "forks": 67,
+    "forks": 68,
     "openIssues": 4,
     "license": null,
     "licenseKind": "unknown",
@@ -1217,12 +1217,12 @@ window.GITHUB_META = {
     "defaultBranch": "main"
   },
   "lobsterai": {
-    "pushedAt": "2026-09-21T04:02:54Z",
-    "updatedAt": "2026-09-21T03:56:35Z",
+    "pushedAt": "2026-09-21T07:02:35Z",
+    "updatedAt": "2026-09-21T06:10:50Z",
     "createdAt": "2026-02-12T09:56:20Z",
-    "stars": 6058,
+    "stars": 6059,
     "forks": 971,
-    "openIssues": 580,
+    "openIssues": 576,
     "license": "MIT",
     "licenseKind": "permissive",
     "archived": false,
