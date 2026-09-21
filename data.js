@@ -490,7 +490,7 @@ const PROJECTS = [
     desc:'免费 Telegram 自动注册工具箱（批量注册账号）。',
     tags:['自动注册', '批量', '最高风险'], lic:null, licKind:'unknown', comm:'no', maint:'unknown',
     seen:'2026-09-13', mentions:1, risk:'marketing', conf:'low',
-    note:'批量注册账号风险最高，强烈不建议使用' },
+    note:'⚠️ 仓库已不存在（GitHub API 返回 404，作者账号也已注销），无法核实许可证；批量注册账号风险最高，强烈不建议使用' },
   { id:'duannai', name:'DuanNaiSheQu/Telegram-bot', url:'https://github.com/DuanNaiSheQu/Telegram-bot', lang:'其他', cat:'growth',
     desc:'号称"Telegram 机器人源码平台/开源社区"，实为资源分发聚合。',
     tags:['资源站', '聚合'], lic:'Unlicense', licKind:'permissive', comm:'yes', maint:'stale',

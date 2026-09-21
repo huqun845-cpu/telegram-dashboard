@@ -44,7 +44,7 @@ python3 -m http.server 8080     # 方式二：本地服务，地址栏状态同�
 | `styles.css` | 主题与样式（深色 / 浅色） |
 | `data.js` | **主数据集**：89 个项目的全部字段 |
 | `app.js` | 全部交互逻辑（筛选 / 图表 / 对比 / 评分 / 采集） |
-| `meta.generated.js` | GitHub API 抓来的真实元数据，**已含 58 个仓库** |
+| `meta.generated.js` | GitHub API 抓来的真实元数据，**已含 88 个仓库** |
 | `meta.json` | 同上，原始 JSON |
 | `fetch-github-meta.mjs` | 抓取脚本（增量、按热度优先） |
 | `bake-meta.mjs` | **烘焙脚本**：把 API 真值写回 `data.js`，并做往返校验 |
@@ -108,7 +108,7 @@ python3 -m http.server 8080     # 方式二：本地服务，地址栏状态同�
 | 级别 | 字段 | 来源 |
 |---|---|---|
 | ✅ **真实** | 出现次数、最近活跃日期 | 你的 420 条搜索记录，直接统计 |
-| ✅ **真实（API）** | 最近提交、Star、Fork、Issues、License、是否归档 | GitHub API 实抓，**已覆盖 58/89 个仓库** |
+| ✅ **真实（API）** | 最近提交、Star、Fork、Issues、License、是否归档 | GitHub API 实抓，**已覆盖 88/89 个仓库**（唯一缺口是已 404 的 lavalarkcorridor/Free-Telegram-Autoreg-Toolkit） |
 | ✅ **已烘焙** | 上面前 6 项的**最终值已写进 `data.js`**（`src:'api'`） | 由 `bake-meta.mjs` 写入，不依赖运行时外挂文件 |
 | ⚠️ 推断 | 未被 API 覆盖的 License / 维护状态 / 商用结论 | 从搜索摘要推断，界面标「待核实」 |
 
@@ -130,7 +130,7 @@ node bake-meta.mjs           # 真正写回，自动备份 data.js.bak
 - 写入前先备份 `data.js.bak`，写完后**重新 require 做往返校验**，逐字段比对
   （区分「新增字段」和「有意变更」，任何非预期丢失都会报错）
 - 实测烘焙结果：**37 个许可证修正、39 个维护状态修正、34 个商用结论修正**
-- 顺便自动补备注：**15 个无 LICENSE** 的仓库会被写上「法律上默认保留所有权利」，已归档的会写「作者已停止维护」
+- 顺便自动补备注：**27 个无 LICENSE** 的仓库会被写上「法律上默认保留所有权利」，已归档的会写「作者已停止维护」
 - 已加回归测试：把 `meta.generated.js` 换成空对象启动，真值必须仍在（测试第 9 节）
 
 ### 补齐剩余 31 个仓库
@@ -156,7 +156,7 @@ node fetch-github-meta.mjs --no-priority       # 按 data.js 顺序抓，不按�
 
 ### ⚖️ 选型提醒：没写 LICENSE ≠ 能商用
 
-API 实测发现 15 个仓库**根本没有 LICENSE 文件**，法律上默认「保留所有权利」。电商类里尤其要注意：
+API 实测发现 27 个仓库**根本没有 LICENSE 文件**，法律上默认「保留所有权利」。电商类里尤其要注意：
 
 | 项目 | 真实许可证 | 能否商用 |
 |---|---|---|
@@ -169,7 +169,7 @@ API 实测发现 15 个仓库**根本没有 LICENSE 文件**，法律上默认�
 | `JumpCodeFrog/telegram-shop-bot` | 无 LICENSE | ⚠️ 默认保留所有权利 |
 | `itzddos/ecommerce-telegram-bot` | 无 LICENSE | ⚠️ 默认保留所有权利 |
 
-合计 **15 个仓库**（含 `mxvsh/modzero`、`leam-tech/frappe_telegram` 等）属于此类，面板里商用列显示「待核实」。
+合计 **27 个仓库**（含 `mxvsh/modzero`、`leam-tech/frappe_telegram` 等）属于此类，面板里商用列显示「待核实」。
 
 另外 `python-telegram-bot` 常被误以为是 LGPL —— 实际是 **GPL-3.0**；`LangBot` 则是 **Apache-2.0**（可自由商用）。
 面板里所有「备注中提到的许可证」都会跟实际许可证做一致性校验（测试第 10 节），防止再出现这种口口相传的错误。
