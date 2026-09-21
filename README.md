@@ -25,6 +25,23 @@ python3 -m http.server 8080     # 方式二：本地服务，地址栏状态同�
 首发会要求登录一次（浏览器点「允许」），**之后永久免登录，再跑就是增量更新**。
 脚本会先跑一遍 `test.mjs`，不通过就拒绝发布（想强行发布：`SKIP_TEST=1`）。
 
+### 当前线上地址
+
+| 用途 | 地址 |
+|---|---|
+| **主力** | https://huqun845-cpu.github.io/telegram-dashboard/ |
+| 备用 | https://telegram-dashboard.surge.sh/ |
+
+### ⚠️ 同时用 GitHub Pages + Surge 的坑
+
+`surge` 部署时会在目录里写一个 `CNAME` 文件（内容是 `telegram-dashboard.surge.sh`）。
+**这个文件绝对不能提交到 GitHub** —— GitHub Pages 一看到 CNAME 就以为自己绑定了自定义域名，
+于是 `huqun845-cpu.github.io/telegram-dashboard/` 会被 **301 跳转到 surge 的地址**，主力地址就废了。
+
+已经处理：`CNAME` 写进了 `.gitignore`，并且从 git 索引里移除过。
+如果你哪天手动 `git add -A` 又把它加进去了，删掉重推，再去仓库
+`Settings → Pages → Custom domain` 清空即可。
+
 | 平台 | 免费额度 | 自定义域名 | 说明 |
 |---|---|---|---|
 | **Cloudflare Pages** | 无限流量 / 500 次构建月 | ✅ | 推荐，全球 CDN 最快，国内可访问性最好 |

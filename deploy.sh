@@ -47,6 +47,13 @@ gh)
 
   USER_NAME=$(gh api user -q .login)
   git rev-parse --git-dir >/dev/null 2>&1 || { git init -q -b main 2>/dev/null || { git init -q; git branch -M main 2>/dev/null || true; }; }
+
+  # 防雷：Surge 部署会生成 CNAME，一旦提交，GitHub Pages 会把默认域名 301 到 surge
+  if git ls-files --error-unmatch CNAME >/dev/null 2>&1; then
+    warn "CNAME 被 git 跟踪了，自动移除（否则 Pages 默认域名会被带偏）"
+    git rm --cached CNAME -q
+  fi
+
   git add -A
   git commit -qm "deploy: 更新看板数据 $(date +'%Y-%m-%d %H:%M')" 2>/dev/null || true
 
