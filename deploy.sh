@@ -51,10 +51,12 @@ gh)
   git commit -qm "deploy: 更新看板数据 $(date +'%Y-%m-%d %H:%M')" 2>/dev/null || true
 
   if git remote get-url origin >/dev/null 2>&1; then
-    git push -q origin main 2>/dev/null || git push -q -u origin main
+    gh auth setup-git >/dev/null 2>&1 || true   # 让 git 复用 gh 的凭证，否则会卡在输密码
+    git push origin main || die "推送失败。检查：gh auth status / gh auth setup-git"
     ok "已推送到已有仓库"
   else
-    gh repo create "$SITE_NAME" --public --source=. --remote=origin --push --description "$DESC" >/dev/null
+    gh auth setup-git >/dev/null 2>&1 || true
+    gh repo create "$SITE_NAME" --public --source=. --remote=origin --push --description "$DESC" || die "创建仓库失败"
     ok "已创建公开仓库 $USER_NAME/$SITE_NAME 并推送"
   fi
 

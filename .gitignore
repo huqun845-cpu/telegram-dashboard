@@ -4,3 +4,8 @@ node_modules/
 .vercel/
 .netlify/
 .wrangler/
+
+# Surge.sh 部署时会自动生成 CNAME（里面是 surge 子域名）。
+# 千万别提交：提交到 GitHub 会让 Pages 误以为你绑定了自定义域名，
+# 结果 github.io 的地址会被 301 跳到 surge 的地址上去。
+CNAME
