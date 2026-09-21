@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Telegram 开源项目洞察面板</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">✈</span>
+    <div>
+      <h1>Telegram 开源项目洞察面板</h1>
+      <p class="sub">搜索记录去重后 <b id="totalCount">0</b> 个项目 ·
+        <b id="metaCount">0</b> 个已获取真实 API 数据 ·
+        生成于 2026-09-20</p>
+    </div>
+  </div>
+  <div class="topbar-actions">
+    <button class="btn ghost" id="btnCollect" title="采集新项目">📡 采集</button>
+    <button class="btn ghost" id="btnMeta" title="导入 GitHub API 元数据 JSON">⤓ 导入数据</button>
+    <input type="file" id="fileMeta" accept=".js,.json" hidden>
+    <button class="btn ghost" id="btnCsv">导出 CSV</button>
+    <button class="btn ghost" id="btnJson">导出 JSON</button>
+    <button class="btn ghost" id="btnTheme">🌗</button>
+  </div>
+</header>
+
+<div class="notice" id="notice">
+  <b>数据分级：</b>
+  <span class="badge b-ok">真实</span> 出现次数 / 最近活跃 / <span id="noticeApi">API 抓取的更新时间·Star·License</span>
+  <span class="badge b-warn">推断</span> 未被 API 覆盖的许可证与维护状态
+  <span class="badge b-mute">空缺</span> 未抓到的仓库显示「待核实」。
+  <b id="noticeMissing"></b>
+</div>
+
+<main class="layout">
+  <!-- ================= 侧边栏 ================= -->
+  <aside class="sidebar">
+    <div class="filters-head">
+      <strong>筛选器</strong>
+      <button class="btn tiny" id="btnReset">重置</button>
+    </div>
+
+    <!-- 选型评分 -->
+    <div class="filter-group score-panel">
+      <h4>🎯 选型评分权重</h4>
+      <label class="lbl">目标场景
+        <select id="scenario"></select>
+      </label>
+      <div class="wrow"><span>商用许可</span><input type="range" class="w" data-w="lic" min="0" max="5" value="3"><b>3</b></div>
+      <div class="wrow"><span>中文文档</span><input type="range" class="w" data-w="zh" min="0" max="5" value="2"><b>2</b></div>
+      <div class="wrow"><span>维护活跃</span><input type="range" class="w" data-w="act" min="0" max="5" value="3"><b>3</b></div>
+      <div class="wrow"><span>功能匹配</span><input type="range" class="w" data-w="rel" min="0" max="5" value="2"><b>2</b></div>
+      <div class="score-tip">评分已实时显示在卡片右上角，选「排序：选型评分」即按分排序。</div>
+    </div>
+
+    <div id="filterGroups"></div>
+
+    <div class="filter-group">
+      <h4>关注热度（历史出现次数）</h4>
+      <input type="range" id="minMentions" min="0" max="5" value="0" step="1">
+      <div class="range-val">≥ <b id="minMentionsVal">0</b> 次</div>
+    </div>
+
+    <div class="filter-group">
+      <h4>快捷开关</h4>
+      <label class="chk"><input type="checkbox" id="excludeRisk"> 排除营销 / 赌博类</label>
+      <label class="chk"><input type="checkbox" id="favOnly"> 仅看收藏 ⭐</label>
+      <label class="chk"><input type="checkbox" id="noteOnly"> 仅看写过备注 📝</label>
+      <label class="chk"><input type="checkbox" id="verifiedOnly"> 仅看已有真实数据 ✓</label>
+    </div>
+  </aside>
+
+  <!-- ================= 主内容 ================= -->
+  <section class="content">
+
+    <div class="presets">
+      <span class="presets-label">⚡ 智能预设</span>
+      <button class="btn tiny" data-preset="prod">🚀 生产级首选<small>近90天提交 ∧ 宽松许可 ∧ 活跃</small></button>
+      <button class="btn tiny" data-preset="commercial">💼 商用安全<small>可商用 ∧ 无风险</small></button>
+      <button class="btn tiny" data-preset="commercialActive">✅ 商用且维护中<small>上面 + 近半年有提交</small></button>
+      <button class="btn tiny" data-preset="miniapp">🛍 Mini App 电商<small>可直接部署的商城</small></button>
+      <button class="btn tiny" data-preset="chinese">🇨🇳 中文友好<small>中文文档 / 中文社区</small></button>
+      <button class="btn tiny" data-preset="hot">🔥 高热度<small>出现 ≥3 次</small></button>
+      <button class="btn tiny" data-preset="starred">⭐ 有 Star 且活跃<small>星级 + 近 90 天提交</small></button>
+    </div>
+
+    <div class="stats" id="stats"></div>
+
+    <div class="charts">
+      <div class="card chart-card">
+        <div class="card-head"><h3>分类分布</h3><span class="hint">点击条形筛选</span></div>
+        <div id="chartCat" class="chart-body"></div>
+      </div>
+      <div class="card chart-card">
+        <div class="card-head"><h3>技术栈分布</h3><span class="hint">点击扇区筛选</span></div>
+        <div id="chartLang" class="chart-body"></div>
+      </div>
+      <div class="card chart-card">
+        <div class="card-head"><h3>许可 / 商用友好度</h3><span class="hint">点击扇区筛选</span></div>
+        <div id="chartLic" class="chart-body"></div>
+      </div>
+      <div class="card chart-card">
+        <div class="card-head"><h3>维护状态</h3><span class="hint">有 API 数据的按真实提交时间判定</span></div>
+        <div id="chartMaint" class="chart-body"></div>
+      </div>
+      <div class="card chart-card wide">
+        <div class="card-head"><h3>更新时间分布（GitHub 真实提交）</h3><span class="hint">按最近 push 距今月数分桶</span></div>
+        <div id="chartPush" class="chart-body"></div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <input type="search" id="search" placeholder="搜索名称 / 功能 / 标签，如：Mini App、转发、MIT…">
+      <div class="viewtoggle" id="modeToggle">
+        <button class="btn tiny active" data-mode="all">全部</button>
+        <button class="btn tiny" data-mode="fav">⭐ 收藏夹 <b id="favCount">0</b></button>
+      </div>
+      <select id="sort">
+        <option value="score">排序：选型评分</option>
+        <option value="mentions">排序：关注热度</option>
+        <option value="pushed">排序：真实更新时间</option>
+        <option value="stars">排序：Star 数</option>
+        <option value="seen">排序：最近活跃</option>
+        <option value="name">排序：名称</option>
+        <option value="cat">排序：分类</option>
+      </select>
+      <div class="viewtoggle">
+        <button class="btn tiny active" data-view="card">卡片</button>
+        <button class="btn tiny" data-view="table">表格</button>
+      </div>
+    </div>
+
+    <div class="active-filters" id="activeFilters"></div>
+    <div class="resultbar"><span id="resultCount">0</span> 个结果 · 勾选 2~4 个可并排对比</div>
+
+    <div id="list" class="list card-view"></div>
+  </section>
+</main>
+
+<!-- 对比浮动条 -->
+<div class="compare-bar" id="compareBar">
+  <div class="cbinfo">已选 <b id="cmpCount">0</b> / 4 个项目</div>
+  <div class="cbnames" id="cmpNames"></div>
+  <button class="btn" id="btnCompare">📊 开始对比</button>
+  <button class="btn ghost" id="btnCmpClear">清空</button>
+</div>
+
+<!-- 详情抽屉 -->
+<div class="drawer-mask" id="drawerMask"></div>
+<aside class="drawer" id="drawer"></aside>
+
+<!-- 对比弹窗 -->
+<div class="modal-mask" id="cmpMask">
+  <div class="modal wide-modal">
+    <div class="modal-head">
+      <h3>📊 项目并排对比</h3>
+      <div>
+        <button class="btn tiny" id="btnCmpMd">复制为 Markdown</button>
+        <button class="btn tiny" id="btnCmpCsv">导出 CSV</button>
+        <button class="btn tiny ghost" data-close="cmpMask">✕</button>
+      </div>
+    </div>
+    <div class="modal-body" id="cmpBody"></div>
+  </div>
+</div>
+
+<!-- 采集弹窗 -->
+<div class="modal-mask" id="colMask">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>📡 采集新项目</h3>
+      <button class="btn tiny ghost" data-close="colMask">✕</button>
+    </div>
+    <div class="tabs">
+      <button class="tab active" data-tab="text">① 文本提取</button>
+      <button class="tab" data-tab="api">② GitHub 搜索</button>
+      <button class="tab" data-tab="pool">③ 候选池 <b id="poolCount">0</b></button>
+    </div>
+    <div class="modal-body">
+      <!-- 文本提取 -->
+      <div class="tabpane active" data-pane="text">
+        <p class="hint" style="margin:0 0 8px">把浏览器历史、网页正文、聊天记录整段粘进来，自动提取其中的 GitHub 仓库链接并去重。</p>
+        <textarea id="colText" rows="7" placeholder="粘贴任意文本，例如：&#10;https://github.com/owner/repo ..."></textarea>
+        <div class="colrow">
+          <button class="btn" id="btnParse">解析链接</button>
+          <label class="chk"><input type="checkbox" id="colDeep" checked> 提取后自动补全 Star / License / 更新时间（每个耗 1 次配额）</label>
+        </div>
+        <div id="colTextResult"></div>
+      </div>
+      <!-- API 搜索 -->
+      <div class="tabpane" data-pane="api">
+        <div class="form-grid">
+          <label>关键词<input id="qAll" placeholder="telegram bot / MTProto" value="telegram bot"></label>
+          <label>最低 Star<input id="qStars" type="number" value="50" min="0"></label>
+          <label>近 N 天有更新<input id="qDays" type="number" value="180" min="1"></label>
+          <label>语言<select id="qLang">
+            <option value="">不限</option><option>Python</option><option>Go</option>
+            <option>TypeScript</option><option>JavaScript</option><option>PHP</option>
+          </select></label>
+          <label>排序<select id="qSort">
+            <option value="stars">Star 最多</option>
+            <option value="updated">最近更新</option>
+          </select></label>
+        </div>
+        <div class="colrow">
+          <button class="btn" id="btnSearch">🔍 搜索 GitHub</button>
+          <span class="hint">未认证配额：搜索 10 次/分钟，结果直接进候选池</span>
+        </div>
+        <div id="colApiResult"></div>
+      </div>
+      <!-- 候选池 -->
+      <div class="tabpane" data-pane="pool">
+        <div class="colrow">
+          <button class="btn" id="btnPoolAddAll">全部并入面板</button>
+          <button class="btn ghost" id="btnPoolExport">导出候选池 JSON</button>
+          <button class="btn ghost" id="btnPoolCode">复制 data.js 代码片段</button>
+          <button class="btn ghost" id="btnPoolClear">清空候选池</button>
+        </div>
+        <div id="poolList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="data.js"></script>
+<script src="meta.generated.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

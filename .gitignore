@@ -1,0 +1,6 @@
+.DS_Store
+data.js.bak
+node_modules/
+.vercel/
+.netlify/
+.wrangler/
