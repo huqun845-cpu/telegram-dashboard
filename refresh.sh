@@ -84,11 +84,13 @@ if [ "$NO_DEPLOY" = "1" ]; then
   exit 0
 fi
 
-if [ "$BEFORE" = "$AFTER" ]; then
+DIRTY=$(git status --porcelain 2>/dev/null)
+if [ "$BEFORE" = "$AFTER" ] && [ -z "$DIRTY" ]; then
   ok "数据无变化（data.js / meta.json 校验和一致），跳过发布"
   bold "════════ 刷新结束（无变更）════════"
   exit 0
 fi
+[ -n "$DIRTY" ] && warn "检测到未提交的改动，一并发布"
 
 bold "▶ [4/4] 发布到线上"
 ./deploy.sh gh    || bad "GitHub Pages 发布失败"

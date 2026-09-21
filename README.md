@@ -10,6 +10,25 @@ open index.html                 # 方式一：直接双击
 python3 -m http.server 8080     # 方式二：本地服务，地址栏状态同步更稳
 ```
 
+## 🔄 每日自动刷新
+
+```bash
+./refresh.sh                 # 抓取 → 烘焙 → 测试 → 发布（一条龙）
+./refresh.sh --no-deploy     # 只更新本地，不发布
+./refresh.sh --dry-run       # 只抓取 + 预览会改动什么，不写盘
+```
+
+细节：
+
+- **用 `gh auth token` 认证**，配额从 60/小时 提到 **5000/小时**，88 个仓库一次抓完约 10 秒
+- **数据没变就不发布**（比对 `data.js` + `meta.json` 的校验和），不会产生无意义的提交
+- **测试不过就不发布**：`test.mjs` 只要有失败断言，整个流程立刻中止
+- 全程写 `refresh.log`，cron 跑的时候也有迹可循
+- 已挂**每日 09:00** 的定时任务，自动执行 `./refresh.sh`
+
+> 已 404 的仓库（`lavalarkcorridor/Free-Telegram-Autoreg-Toolkit`）会被识别为「已失效」，
+> 每天只花 1 次请求探测一下（万一作者复活了能自动恢复），不会再提示「还剩 N 个未抓取」。
+
 ## 🌐 发布到外网（永久免费）
 
 零依赖静态站，随便丢哪家托管都能跑。一条命令搞定：
@@ -67,6 +86,7 @@ python3 -m http.server 8080     # 方式二：本地服务，地址栏状态同�
 | `bake-meta.mjs` | **烘焙脚本**：把 API 真值写回 `data.js`，并做往返校验 |
 | `test.mjs` | 69 条断言的功能测试（Node + DOM 垫片，不需要浏览器） |
 | `deploy.sh` | 一键发布到外网（gh / cloudflare / netlify / vercel / surge） |
+| `refresh.sh` | **一键刷新全流程**：抓取 → 烘焙 → 测试 → 发布（已挂每日定时） |
 | `.nojekyll` | 让 GitHub Pages 跳过 Jekyll 处理 |
 | `404.html` | 静态托管的兜底页，自动跳回首页 |
 
