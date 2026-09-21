@@ -61,6 +61,7 @@ const PROJECTS = [
     desc:'Node.js 生态最主流的 Bot 框架，中间件式设计，插件丰富。',
     tags:['Bot框架', '中间件'], lic:'MIT', licKind:'permissive', comm:'yes', maint:'stale',
     pushedAt:'2025-01-11', stars:9189, forks:939, src:'api',
+    note:'GitHub 主仓库自 2025-01-11 起再无提交（README 里 Bot API 徽章仍停在 v7.1），已停更约 20 个月；Node.js 生态建议改看 grammY',
     seen:'2026-09-17', mentions:3, risk:'normal', conf:'high' },
   { id:'gotgbot', name:'PaulSonOfLars/gotgbot', url:'https://github.com/PaulSonOfLars/gotgbot', lang:'Go', cat:'framework',
     desc:'自动生成的 Telegram API Go 封装，API 风格刻意对齐 python-telegram-bot。',
