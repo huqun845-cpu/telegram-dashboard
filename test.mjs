@@ -1,7 +1,11 @@
 /* 功能测试：选型评分 / 对比 / 收藏夹+备注 / 采集器 / 预设 */
 import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const DIR = process.env.TG_DIR || '/Users/a123/.aionui/conversations/users/01a0a2c9-6d47-70b2-882b-3b5d90754037/2026/09/20/aionrs-temp-22f3fa04/telegram-dashboard';
+// 默认就测「本文件所在目录」——写死某台机器的绝对路径会导致
+// 在别处跑时静默加载另一份陈旧副本，测试全绿但测的是旧代码。
+const DIR = process.env.TG_DIR || path.dirname(fileURLToPath(import.meta.url));
 
 const mkEl = () => ({
   innerHTML: '', textContent: '', value: '', checked: false, disabled: false, title: '', dataset: {}, style: {},
@@ -59,11 +63,22 @@ check('API 数据已合并', withApi.length >= 50, withApi.length + ' / ' + T.DA
 const tgfw = T.DATA.find(p => p.id === 'tgforwarder');
 check('tgforwarder 用真实 License 覆盖推断', tgfw.lic === 'GPL-3.0' && tgfw.comm === 'caution', `${tgfw.lic} / ${tgfw.comm}`);
 const modzero = T.DATA.find(p => p.id === 'modzero');
-check('modzero 因久未提交被判为停更', modzero.maint === 'stale', `最近提交 ${modzero.pushed} → ${T.MAINT(modzero.days)}`);
+check('modzero 因久未提交被判为停更', modzero.maint === 'stale' && modzero.days > 365,
+  `最近提交 ${modzero.pushed} → ${T.MAINT(modzero.days)}（${modzero.days} 天前）`);
 const wbb = T.DATA.find(p => p.id === 'wbb');
-check('维护状态按真实提交时间重算', wbb.maint === 'active', `${wbb.pushed}（${wbb.days} 天前）`);
-check('daysAgo 计算正确', (() => { const d = T.DAYS('2026-09-10'); return d >= 10 && d <= 13; })(),
-  '2026-09-10 距今 ' + T.DAYS('2026-09-10') + ' 天（机器时钟）');
+// 断言「推导规则」而不是「此刻的结论」——否则测试会随机器时钟一天天烂掉
+check('维护状态由真实提交时间推导（≤90活跃 / ≤365维护中 / 更久停更）',
+  wbb.maint === T.MAINT(wbb.days) && wbb.days === T.DAYS(wbb.pushed) && wbb.pushed === wbb.pushedAt,
+  `${wbb.pushed} → ${wbb.days} 天 → ${wbb.maint}`);
+check('daysAgo 与系统时钟一致（不写死天数）', (() => {
+  const d = T.DAYS('2026-09-10');
+  const expect = Math.round((Date.now() - new Date('2026-09-10T00:00:00').getTime()) / 86400000);
+  return Math.abs(d - expect) <= 1;
+})(), '2026-09-10 距今 ' + T.DAYS('2026-09-10') + ' 天（机器时钟）');
+check('maintFromDays 三档分界正确',
+  T.MAINT(0) === 'active' && T.MAINT(90) === 'active' && T.MAINT(91) === 'maintained'
+  && T.MAINT(365) === 'maintained' && T.MAINT(366) === 'stale',
+  `0→${T.MAINT(0)} 90→${T.MAINT(90)} 91→${T.MAINT(91)} 365→${T.MAINT(365)} 366→${T.MAINT(366)}`);
 
 console.log('\n===== 2. 选型评分 =====');
 const sc = T.scoreOf(wbb);
@@ -206,15 +221,16 @@ console.log('\n===== 9. 退化测试：meta.generated.js 丢失时仍用烘焙�
 const T2 = boot('window.GITHUB_META = {};', true);
 const bakedN = T2.DATA.filter(p => p.baked).length;
 const apiN = T2.DATA.filter(p => p.hasApi).length;
-check('meta 为空但烘焙数据仍在', Object.keys(T2.META).length === 0 && bakedN >= 58, `烘焙 ${bakedN} 条，hasApi ${apiN} 条`);
+check('meta 为空但烘焙数据仍在', Object.keys(T2.META).length === 0 && bakedN >= 85, `烘焙 ${bakedN} 条，hasApi ${apiN} 条`);
 check('许可证不退回「未知」', T2.DATA.filter(p => p.baked && p.licKind === 'unknown' && p.lic).length === 0);
 const wbb2 = T2.DATA.find(p => p.id === 'wbb');
-check('维护状态仍按真实提交判定', wbb2.maint === 'active' && wbb2.pushed != null, `${wbb2.name} ${wbb2.pushed} → ${wbb2.maint}`);
+check('维护状态仍由烘焙的提交时间推导', wbb2.maint === T2.MAINT(wbb2.days) && wbb2.pushed != null,
+  `${wbb2.name} ${wbb2.pushed} → ${wbb2.days} 天 → ${wbb2.maint}`);
 check('Star 数仍在', typeof wbb2.stars === 'number' && wbb2.stars > 0, '★' + wbb2.stars);
 const ptb2 = T2.DATA.find(p => p.id === 'ptb');
 check('GPL 项目仍被判为有条件商用', ptb2.lic === 'GPL-3.0' && ptb2.comm === 'caution', `${ptb2.lic} → ${ptb2.comm}`);
 const tele2 = T2.DATA.find(p => p.id === 'telegraf');
-check('停更项目仍未被打回活跃', tele2.maint === 'stale', `${tele2.name} ${tele2.pushed}`);
+check('停更项目仍未被打回活跃', tele2.maint === 'stale' && tele2.days > 365, `${tele2.name} ${tele2.pushed} → ${tele2.days} 天`);
 check('统计卡显示核实覆盖率', els['#noticeApi'].textContent.includes('已核实'), els['#noticeApi'].textContent.slice(0, 46) + '…');
 T2.PRESETS.prod.run(); T2.render();
 check('预设「生产级首选」无 meta 也能筛', T2.currentList().length > 0 && T2.currentList().every(p => p.licKind === 'permissive' && p.days <= 90),
