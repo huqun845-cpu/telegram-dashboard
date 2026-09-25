@@ -229,8 +229,14 @@ check('维护状态仍由烘焙的提交时间推导', wbb2.maint === T2.MAINT(w
 check('Star 数仍在', typeof wbb2.stars === 'number' && wbb2.stars > 0, '★' + wbb2.stars);
 const ptb2 = T2.DATA.find(p => p.id === 'ptb');
 check('GPL 项目仍被判为有条件商用', ptb2.lic === 'GPL-3.0' && ptb2.comm === 'caution', `${ptb2.lic} → ${ptb2.comm}`);
-const tele2 = T2.DATA.find(p => p.id === 'telegraf');
-check('停更项目仍未被打回活跃', tele2.maint === 'stale' && tele2.days > 365, `${tele2.name} ${tele2.pushed} → ${tele2.days} 天`);
+// 不写死具体项目：数据每天在变，写死哪个仓库「停更」迟早会烂。
+// 这里改成从数据里动态挑一个久未提交的，验证「meta 丢失也不会被打回活跃」。
+const staleOne = T2.DATA.filter(p => p.days > 365 && p.baked).sort((a, b) => b.days - a.days)[0];
+check('久未提交的项目未被打回活跃', !staleOne || staleOne.maint === 'stale',
+  staleOne ? `${staleOne.name} ${staleOne.pushed} → ${staleOne.days} 天 → ${staleOne.maint}` : '当前没有 >365 天的项目');
+const recentlyPushed = T2.DATA.filter(p => p.baked && p.days <= 90);
+check('近 90 天有提交的项目标记为活跃', recentlyPushed.length > 0 && recentlyPushed.every(p => p.maint === 'active'),
+  `${recentlyPushed.length} 个活跃项目`);
 check('统计卡显示核实覆盖率', els['#noticeApi'].textContent.includes('已核实'), els['#noticeApi'].textContent.slice(0, 46) + '…');
 T2.PRESETS.prod.run(); T2.render();
 check('预设「生产级首选」无 meta 也能筛', T2.currentList().length > 0 && T2.currentList().every(p => p.licKind === 'permissive' && p.days <= 90),
@@ -251,6 +257,18 @@ const ptbNote = T.DATA.find(p => p.id === 'ptb').note;
 check('ptb 备注不再自称 LGPL', !/LGPL/.test(ptbNote), ptbNote);
 const lbNote = T.DATA.find(p => p.id === 'langbot').note;
 check('langbot 备注已改为 Apache-2.0', /Apache-2\.0/.test(lbNote) && !/AGPL/.test(lbNote), lbNote);
+
+// 人工写的备注会随项目复活而变成谣言：telegraf 曾停更 20 个月，
+// 2026-09-24 恢复维护，备注若还断言「已停更」就会误导选型。
+// 判定：备注断言休眠态 + 实测近 180 天有提交 + 备注里没有「恢复/复活/重新」之类的转折 → 视为过期
+const DORMANT = /已停更|仍停更|不再维护|已废弃|无提交|停止维护/;
+const REVIVED = /恢复|已复活|重新维护|重启维护/;
+const staleClaims = T.DATA.filter(p => p.note && DORMANT.test(p.note) && p.days != null && p.days <= 180 && !REVIVED.test(p.note));
+check('没有「备注断言停更、但实测近期有提交」的条目', staleClaims.length === 0,
+  staleClaims.map(p => `${p.id} 备注称停更 / 实际 ${p.pushed}（${p.days} 天前）`).join('; ') || '全部一致');
+const deadClaims = T.DATA.filter(p => p.note && /已不存在|已失效/.test(p.note) && p.hasApi);
+check('没有「备注说仓库已不存在、但 API 又能抓到了」的条目', deadClaims.length === 0,
+  deadClaims.map(p => p.id).join('; ') || '全部一致');
 
 console.log(`\n${'='.repeat(46)}\n结果：${pass_} 通过 / ${fail_} 失败\n${'='.repeat(46)}`);
 process.exit(fail_ ? 1 : 0);
