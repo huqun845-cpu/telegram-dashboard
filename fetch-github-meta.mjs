@@ -14,6 +14,7 @@
  * ============================================================ */
 
 import { readFile, writeFile } from 'node:fs/promises';
+import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -21,7 +22,20 @@ import { fileURLToPath } from 'node:url';
 const DIR = path.dirname(fileURLToPath(import.meta.url));
 const DATA_FILE = path.join(DIR, 'data.js');
 const META_FILE = path.join(DIR, 'meta.json');
-const TOKEN = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || '';
+/**
+ * token 解析顺序：环境变量优先，其次自动向 gh CLI 要。
+ * 必须自动兜底 —— 直接手跑 `node fetch-github-meta.mjs` 时若忘了 export，
+ * 未认证配额只有 60/小时，抓到一半就限流，剩下的仓库会被当成「抓取失败」。
+ */
+function resolveToken() {
+  const fromEnv = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || '';
+  if (fromEnv) return fromEnv;
+  try {
+    return execSync('gh auth token', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
+  } catch { return ''; }
+}
+const TOKEN = resolveToken();
+const TOKEN_SRC = (process.env.GITHUB_TOKEN || process.env.GH_TOKEN) ? 'env' : (TOKEN ? 'gh CLI' : '无');
 const argv = process.argv.slice(2);
 const flag = (name) => argv.find(a => a === name || a.startsWith(name + '='));
 const ONLY = (() => { const a = flag('--only'); return a && a.includes('=') ? a.split('=')[1].split(',').map(s => s.trim()) : null; })();
@@ -121,10 +135,10 @@ async function rateLimit() {
 
   const rl = await rateLimit();
   console.log(`📦 data.js 共 ${all.length} 个仓库，已有真实数据 ${Object.values(existing).filter(isOk).length} 个`);
-  console.log(`🎯 本次抓取 ${targets.length} 个${PRIORITY ? '（按历史热度优先）' : ''}${TOKEN ? '｜已认证 5000/h' : `｜未认证，剩余配额 ${rl.remaining ?? '?'}`}`);
+  console.log(`🎯 本次抓取 ${targets.length} 个${PRIORITY ? '（按历史热度优先）' : ''}${TOKEN ? `｜已认证 5000/h（token 来自 ${TOKEN_SRC}）` : `｜⚠️  未认证，剩余配额 ${rl.remaining ?? '?'}，抓不完会被限流`}`);
 
   const meta = { ...existing };
-  let ok = 0, fail = 0, rateLimited = false;
+  let ok = 0, fail = 0, kept = 0, rateLimited = false;
   const dead = new Set();   // 404：仓库已删除/改名，不再计入「待抓取」
 
   for (const t of targets) {
@@ -133,8 +147,17 @@ async function rateLimit() {
       const r = await fetchRepo(t.slug);
       if (r.error) {
         console.warn(`  ✗ ${t.id.padEnd(18)} ${r.error}`);
-        delete meta[t.id];
-        if (r.error.includes('不存在')) dead.add(t.id);
+        if (r.error.includes('不存在')) {
+          // 仓库真的没了，清掉（否则面板会一直显示一份查无此人的数据）
+          delete meta[t.id];
+          dead.add(t.id);
+        } else if (isOk(existing[t.id])) {
+          // 限流/网络抖动/5xx 属于「本次没问到」，不该把上次抓到的好数据抹掉
+          kept++;
+          console.warn(`      ↳ 保留上次抓到的数据（${String(existing[t.id].pushedAt).slice(0, 10)}），本次不更新`);
+        } else {
+          delete meta[t.id];
+        }
         fail++;
         if (r.error.includes('限流')) rateLimited = true;
       } else {
@@ -144,22 +167,27 @@ async function rateLimit() {
       }
     } catch (e) {
       console.warn(`  ✗ ${t.id.padEnd(18)} ${e.message}`);
+      if (isOk(existing[t.id])) { kept++; console.warn('      ↳ 保留上次抓到的数据'); }
       fail++;
     }
     await new Promise(r => setTimeout(r, TOKEN ? 60 : 300));
   }
 
   const okCount = Object.values(meta).filter(isOk).length;
+  // 刻意不放「生成时间」：每次跑都变的横幅会让 meta.generated.js 永远处于
+  // 「已修改」状态，refresh.sh 的「数据无变化就不发布」判断会因此永久失效。
+  // 改用数据自身派生的信息，内容没变则文件字节完全一致。
+  const dates = Object.values(meta).filter(isOk).map(v => v.pushedAt).filter(Boolean).sort();
   const banner = `/* meta.generated.js — 由 fetch-github-meta.mjs 自动生成
- * 生成时间：${new Date().toLocaleString()}
  * 已有真实数据：${okCount} / ${all.length} 个仓库
+ * 最新一次提交时间：${dates.at(-1) || '—'}
  */\n`;
   await writeFile(META_FILE, JSON.stringify(meta, null, 2), 'utf8');
   await writeFile(path.join(DIR, 'meta.generated.js'), banner + 'window.GITHUB_META = ' + JSON.stringify(meta, null, 2) + ';\n', 'utf8');
 
   // 已 404 的仓库不算「待抓取」，否则每天都会提示一个永远抓不到的仓库
   const missing = all.filter(t => !isOk(meta[t.id]) && !dead.has(t.id));
-  console.log(`\n✅ 本次成功 ${ok}，失败 ${fail}`);
+  console.log(`\n✅ 本次成功 ${ok}，失败 ${fail}${kept ? `（其中 ${kept} 个为瞬时失败，已保留上次数据）` : ''}`);
   console.log(`📊 累计覆盖 ${okCount} / ${all.length} 个仓库 —— 刷新面板页面即可看到真实更新时间/Star/License。`);
   if (dead.size) {
     console.log(`\n🚫 ${dead.size} 个仓库已失效（GitHub 返回 404，仓库被删或改名），不再重试：`);

@@ -1,24 +1,8 @@
 /* meta.generated.js — 由 fetch-github-meta.mjs 自动生成
- * 生成时间：9/26/2026, 9:00:46 AM
  * 已有真实数据：88 / 89 个仓库
+ * 最新一次提交时间：2026-09-26T00:47:56Z
  */
 window.GITHUB_META = {
-  "chanmgr": {
-    "pushedAt": "2026-08-30T13:15:35Z",
-    "updatedAt": "2026-08-30T11:49:11Z",
-    "createdAt": "2026-02-23T18:21:54Z",
-    "stars": 0,
-    "forks": 1,
-    "openIssues": 1,
-    "license": null,
-    "licenseKind": "unknown",
-    "archived": false,
-    "disabled": false,
-    "homepage": null,
-    "description": "面向 Telegram 群组/频道运营与内容治理的自动化管理机器人，核心解决   重复媒体堆积、历史内容回溯困难和规则维护分散的问题，通过实时去重、历史扫描、标   签处理和 Web 管理面板，把“监听-清洗-管理-追踪”整合成可持续运行的一体化流程。",
-    "topics": [],
-    "defaultBranch": "main"
-  },
   "chanadmin": {
     "pushedAt": "2026-09-15T19:32:29Z",
     "updatedAt": "2026-09-15T20:29:15Z",
@@ -1551,29 +1535,6 @@ window.GITHUB_META = {
     "topics": [],
     "defaultBranch": "master"
   },
-  "n8napprove": {
-    "pushedAt": "2026-08-20T21:53:00Z",
-    "updatedAt": "2026-08-20T21:55:11Z",
-    "createdAt": "2026-04-04T19:39:40Z",
-    "stars": 0,
-    "forks": 0,
-    "openIssues": 0,
-    "license": "MIT",
-    "licenseKind": "permissive",
-    "archived": false,
-    "disabled": false,
-    "homepage": null,
-    "description": "Human-in-the-loop approval for n8n workflows via Telegram. Import-ready workflows for AI content pipelines and generic data approval.",
-    "topics": [
-      "approval",
-      "automation",
-      "human-in-the-loop",
-      "n8n",
-      "telegram",
-      "workflow"
-    ],
-    "defaultBranch": "main"
-  },
   "hellbot": {
     "pushedAt": "2024-06-03T09:05:18Z",
     "updatedAt": "2026-09-24T19:48:58Z",
@@ -2249,5 +2210,44 @@ window.GITHUB_META = {
       "telegramgroups"
     ],
     "defaultBranch": "master"
+  },
+  "chanmgr": {
+    "pushedAt": "2026-08-30T13:15:35Z",
+    "updatedAt": "2026-08-30T11:49:11Z",
+    "createdAt": "2026-02-23T18:21:54Z",
+    "stars": 0,
+    "forks": 1,
+    "openIssues": 1,
+    "license": null,
+    "licenseKind": "unknown",
+    "archived": false,
+    "disabled": false,
+    "homepage": null,
+    "description": "面向 Telegram 群组/频道运营与内容治理的自动化管理机器人，核心解决   重复媒体堆积、历史内容回溯困难和规则维护分散的问题，通过实时去重、历史扫描、标   签处理和 Web 管理面板，把“监听-清洗-管理-追踪”整合成可持续运行的一体化流程。",
+    "topics": [],
+    "defaultBranch": "main"
+  },
+  "n8napprove": {
+    "pushedAt": "2026-08-20T21:53:00Z",
+    "updatedAt": "2026-08-20T21:55:11Z",
+    "createdAt": "2026-04-04T19:39:40Z",
+    "stars": 0,
+    "forks": 0,
+    "openIssues": 0,
+    "license": "MIT",
+    "licenseKind": "permissive",
+    "archived": false,
+    "disabled": false,
+    "homepage": null,
+    "description": "Human-in-the-loop approval for n8n workflows via Telegram. Import-ready workflows for AI content pipelines and generic data approval.",
+    "topics": [
+      "approval",
+      "automation",
+      "human-in-the-loop",
+      "n8n",
+      "telegram",
+      "workflow"
+    ],
+    "defaultBranch": "main"
   }
 };
