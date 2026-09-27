@@ -1,6 +1,6 @@
 /* meta.generated.js — 由 fetch-github-meta.mjs 自动生成
  * 已有真实数据：88 / 89 个仓库
- * 最新一次提交时间：2026-09-26T00:47:56Z
+ * 最新一次提交时间：2026-09-27T00:56:00Z
  */
 window.GITHUB_META = {
   "chanadmin": {
@@ -36,10 +36,10 @@ window.GITHUB_META = {
   },
   "ptb": {
     "pushedAt": "2026-09-23T17:12:10Z",
-    "updatedAt": "2026-09-25T23:14:22Z",
+    "updatedAt": "2026-09-26T03:39:42Z",
     "createdAt": "2015-07-07T15:30:39Z",
-    "stars": 29490,
-    "forks": 6151,
+    "stars": 29491,
+    "forks": 6150,
     "openIssues": 29,
     "license": "GPL-3.0",
     "licenseKind": "copyleft",
@@ -57,12 +57,12 @@ window.GITHUB_META = {
     "defaultBranch": "master"
   },
   "langbot": {
-    "pushedAt": "2026-09-25T22:34:18Z",
-    "updatedAt": "2026-09-25T22:49:47Z",
+    "pushedAt": "2026-09-27T00:56:00Z",
+    "updatedAt": "2026-09-27T00:25:43Z",
     "createdAt": "2022-12-07T08:48:02Z",
-    "stars": 17964,
+    "stars": 17965,
     "forks": 1610,
-    "openIssues": 121,
+    "openIssues": 123,
     "license": "Apache-2.0",
     "licenseKind": "permissive",
     "archived": false,
@@ -131,10 +131,10 @@ window.GITHUB_META = {
   },
   "shopbot": {
     "pushedAt": "2026-08-31T23:29:22Z",
-    "updatedAt": "2026-09-24T03:59:18Z",
+    "updatedAt": "2026-09-26T03:31:55Z",
     "createdAt": "2023-03-08T15:36:50Z",
     "stars": 238,
-    "forks": 98,
+    "forks": 99,
     "openIssues": 1,
     "license": "MIT",
     "licenseKind": "permissive",
@@ -245,9 +245,9 @@ window.GITHUB_META = {
   },
   "telegraf": {
     "pushedAt": "2026-09-24T15:15:55Z",
-    "updatedAt": "2026-09-25T22:08:15Z",
+    "updatedAt": "2026-09-26T09:05:41Z",
     "createdAt": "2016-04-16T18:05:48Z",
-    "stars": 9190,
+    "stars": 9191,
     "forks": 939,
     "openIssues": 76,
     "license": "MIT",
@@ -272,9 +272,9 @@ window.GITHUB_META = {
   },
   "dsbot": {
     "pushedAt": "2026-09-01T08:27:23Z",
-    "updatedAt": "2026-09-24T11:12:20Z",
+    "updatedAt": "2026-09-26T18:23:52Z",
     "createdAt": "2025-02-17T10:58:11Z",
-    "stars": 1635,
+    "stars": 1637,
     "forks": 240,
     "openIssues": 5,
     "license": "MIT",
@@ -491,10 +491,10 @@ window.GITHUB_META = {
   },
   "amirabot": {
     "pushedAt": "2026-09-11T13:57:47Z",
-    "updatedAt": "2026-09-25T22:07:56Z",
+    "updatedAt": "2026-09-26T22:38:20Z",
     "createdAt": "2026-09-11T13:38:49Z",
-    "stars": 147,
-    "forks": 257,
+    "stars": 158,
+    "forks": 277,
     "openIssues": 10,
     "license": null,
     "licenseKind": "unknown",
@@ -908,7 +908,7 @@ window.GITHUB_META = {
   },
   "gtgbot": {
     "pushedAt": "2026-09-11T09:33:48Z",
-    "updatedAt": "2026-09-25T02:57:18Z",
+    "updatedAt": "2026-09-26T14:11:38Z",
     "createdAt": "2022-04-25T15:57:38Z",
     "stars": 1844,
     "forks": 161,
@@ -1045,9 +1045,9 @@ window.GITHUB_META = {
   },
   "musebot": {
     "pushedAt": "2026-09-01T08:27:23Z",
-    "updatedAt": "2026-09-24T11:12:20Z",
+    "updatedAt": "2026-09-26T18:23:52Z",
     "createdAt": "2025-02-17T10:58:11Z",
-    "stars": 1635,
+    "stars": 1637,
     "forks": 240,
     "openIssues": 5,
     "license": "MIT",
@@ -1088,9 +1088,9 @@ window.GITHUB_META = {
   },
   "wechatbot": {
     "pushedAt": "2026-09-04T02:33:31Z",
-    "updatedAt": "2026-09-25T23:11:06Z",
+    "updatedAt": "2026-09-26T06:16:16Z",
     "createdAt": "2021-12-15T06:04:18Z",
-    "stars": 11399,
+    "stars": 11401,
     "forks": 1301,
     "openIssues": 120,
     "license": "MIT",
@@ -1181,9 +1181,9 @@ window.GITHUB_META = {
   },
   "parsehub": {
     "pushedAt": "2026-09-19T02:59:20Z",
-    "updatedAt": "2026-09-25T02:51:25Z",
+    "updatedAt": "2026-09-26T06:56:25Z",
     "createdAt": "2024-09-24T14:36:19Z",
-    "stars": 715,
+    "stars": 717,
     "forks": 64,
     "openIssues": 0,
     "license": "MIT",
@@ -1201,12 +1201,12 @@ window.GITHUB_META = {
     "defaultBranch": "main"
   },
   "lobsterai": {
-    "pushedAt": "2026-09-25T16:28:13Z",
-    "updatedAt": "2026-09-25T20:04:49Z",
+    "pushedAt": "2026-09-26T17:19:16Z",
+    "updatedAt": "2026-09-26T15:55:40Z",
     "createdAt": "2026-02-12T09:56:20Z",
-    "stars": 6070,
+    "stars": 6071,
     "forks": 973,
-    "openIssues": 562,
+    "openIssues": 549,
     "license": "MIT",
     "licenseKind": "permissive",
     "archived": false,
@@ -1321,12 +1321,12 @@ window.GITHUB_META = {
     "defaultBranch": "dev"
   },
   "alita": {
-    "pushedAt": "2026-09-26T00:47:56Z",
-    "updatedAt": "2026-09-25T04:01:40Z",
+    "pushedAt": "2026-09-26T02:11:01Z",
+    "updatedAt": "2026-09-26T02:10:27Z",
     "createdAt": "2020-10-26T04:57:50Z",
     "stars": 248,
     "forks": 322,
-    "openIssues": 1,
+    "openIssues": 0,
     "license": "MIT",
     "licenseKind": "permissive",
     "archived": false,
@@ -1389,8 +1389,8 @@ window.GITHUB_META = {
     "defaultBranch": "main"
   },
   "telepost": {
-    "pushedAt": "2026-09-24T11:54:35Z",
-    "updatedAt": "2026-09-24T11:54:38Z",
+    "pushedAt": "2026-09-26T23:28:38Z",
+    "updatedAt": "2026-09-26T23:28:42Z",
     "createdAt": "2025-10-24T09:22:36Z",
     "stars": 16,
     "forks": 3,
@@ -1400,7 +1400,7 @@ window.GITHUB_META = {
     "archived": false,
     "disabled": false,
     "homepage": "https://redtidev1918.github.io/TelePost/",
-    "description": "Telegram 频道投稿、审核与自动化发布平台，支持 Bot、Mini App、多 Bot 和 HTTP API。",
+    "description": "Telegram 频道投稿、审核与自动化发布平台，支持 Bot、Mini App、多 Bot 和 HTTP API。 | Telegram channel submission, moderation and automated publishing platform with Bot, Mini App, multi-bot and HTTP API support",
     "topics": [
       "automation",
       "content-management",
@@ -1776,7 +1776,7 @@ window.GITHUB_META = {
     "updatedAt": "2026-09-23T04:12:53Z",
     "createdAt": "2021-05-05T12:15:27Z",
     "stars": 2413,
-    "forks": 6408,
+    "forks": 6410,
     "openIssues": 31,
     "license": "GPL-3.0",
     "licenseKind": "copyleft",
@@ -2099,8 +2099,8 @@ window.GITHUB_META = {
     "defaultBranch": "main"
   },
   "hermanosender": {
-    "pushedAt": "2026-09-25T23:50:48Z",
-    "updatedAt": "2026-09-25T23:50:51Z",
+    "pushedAt": "2026-09-27T00:16:03Z",
+    "updatedAt": "2026-09-27T00:16:07Z",
     "createdAt": "2025-11-07T17:48:50Z",
     "stars": 0,
     "forks": 0,
@@ -2145,11 +2145,11 @@ window.GITHUB_META = {
   },
   "awesometg": {
     "pushedAt": "2026-09-21T12:24:17Z",
-    "updatedAt": "2026-09-26T00:42:55Z",
+    "updatedAt": "2026-09-26T17:11:10Z",
     "createdAt": "2016-07-01T21:11:51Z",
-    "stars": 5883,
-    "forks": 576,
-    "openIssues": 10,
+    "stars": 5884,
+    "forks": 578,
+    "openIssues": 12,
     "license": null,
     "licenseKind": "unknown",
     "archived": false,
@@ -2164,11 +2164,11 @@ window.GITHUB_META = {
   },
   "awesometma": {
     "pushedAt": "2026-05-05T13:55:28Z",
-    "updatedAt": "2026-09-25T06:56:28Z",
+    "updatedAt": "2026-09-26T12:51:34Z",
     "createdAt": "2023-09-06T09:59:43Z",
-    "stars": 1401,
+    "stars": 1402,
     "forks": 145,
-    "openIssues": 58,
+    "openIssues": 59,
     "license": "CC0-1.0",
     "licenseKind": "permissive",
     "archived": false,
