@@ -107,7 +107,7 @@ const PROJECTS = [
   { id:'amirabot', name:'developerAmira/telegram-bot', url:'https://github.com/developerAmira/telegram-bot', lang:'TypeScript', cat:'framework',
     desc:'波斯语/英语双语 Bot 管理面板，Cloudflare Workers + KV + Hono + Tailwind。',
     tags:['管理面板', 'Hono', 'KV'], lic:null, licKind:'unknown', comm:'unknown', maint:'active',
-    pushedAt:'2026-10-01', stars:245, forks:440, src:'api',
+    pushedAt:'2026-10-01', stars:246, forks:441, src:'api',
     seen:'2026-09-20', mentions:2, risk:'normal', conf:'low',
     note:'无 LICENSE 文件：法律上默认「保留所有权利」，商用前需先联系作者授权' },
 
@@ -176,7 +176,7 @@ const PROJECTS = [
   { id:'lobsterai', name:'网易有道/LobsterAI', url:'https://github.com/netease-youdao/LobsterAI', lang:'TypeScript', cat:'ai',
     desc:'开源桌面级 AI 助手：数据分析、做 PPT、写文档、做视频、联网搜索；可远程下达指令。',
     tags:['桌面助手', '办公自动化', '大厂'], lic:'MIT', licKind:'permissive', comm:'yes', maint:'active',
-    pushedAt:'2026-11-04', stars:6163, forks:977, src:'api',
+    pushedAt:'2026-11-04', stars:6164, forks:977, src:'api',
     seen:'2026-09-14', mentions:1, risk:'normal', conf:'medium' },
   { id:'mailassist', name:'AntonLukjanov/mail-telegram-assistant', url:'https://github.com/AntonLukjanov/mail-telegram-assistant', lang:'Python', cat:'ai',
     desc:'Mail.ru 企业邮箱 → Telegram 助理，带发件人白名单与 OpenRouter 处理。',
