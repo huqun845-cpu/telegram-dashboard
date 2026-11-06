@@ -10,31 +10,34 @@
 
 <header class="topbar">
   <div class="brand">
-    <span class="logo">✈</span>
+    <span class="logo"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M21 4 3 11.2l5.6 2.1L19 6.4l-8.3 8.9.3 4.3 2.7-2.9 3.6 2.5z"/></svg></span>
     <div>
-      <h1>Telegram 开源项目洞察面板</h1>
+      <h1>Telegram 开源项目选型</h1>
       <p class="sub">搜索记录去重后 <b id="totalCount">0</b> 个项目 ·
         <b id="metaCount">0</b> 个已获取真实 API 数据 ·
         生成于 2026-09-20</p>
     </div>
   </div>
   <div class="topbar-actions">
-    <button class="btn ghost" id="btnCollect" title="采集新项目">📡 采集</button>
-    <button class="btn ghost" id="btnMeta" title="导入 GitHub API 元数据 JSON">⤓ 导入数据</button>
+    <button class="btn ghost" id="btnCollect" title="采集新项目">采集</button>
+    <button class="btn ghost" id="btnMeta" title="导入 GitHub API 元数据 JSON">导入数据</button>
     <input type="file" id="fileMeta" accept=".js,.json" hidden>
     <button class="btn ghost" id="btnCsv">导出 CSV</button>
     <button class="btn ghost" id="btnJson">导出 JSON</button>
-    <button class="btn ghost" id="btnTheme">🌗</button>
+    <button class="btn ghost" id="btnTheme" title="切换主题">主题</button>
   </div>
 </header>
 
-<div class="notice" id="notice">
-  <b>数据分级：</b>
-  <span class="badge b-ok">真实</span> 出现次数 / 最近活跃 / <span id="noticeApi">API 抓取的更新时间·Star·License</span>
-  <span class="badge b-warn">推断</span> 未被 API 覆盖的许可证与维护状态
-  <span class="badge b-mute">空缺</span> 未抓到的仓库显示「待核实」。
-  <b id="noticeMissing"></b>
-</div>
+<details class="notice" id="notice">
+  <summary>数据说明 · 每日 09:00 自动更新</summary>
+  <div class="notice-body">
+    <b>数据分级：</b>
+    <span class="badge b-ok">真实</span> 出现次数 / 最近活跃 / <span id="noticeApi">API 抓取的更新时间·Star·License</span>
+    <span class="badge b-warn">推断</span> 未被 API 覆盖的许可证与维护状态
+    <span class="badge b-mute">空缺</span> 未抓到的仓库显示「待核实」。
+    <b id="noticeMissing"></b>
+  </div>
+</details>
 
 <main class="layout">
   <!-- ================= 侧边栏 ================= -->
@@ -46,7 +49,7 @@
 
     <!-- 选型评分 -->
     <div class="filter-group score-panel">
-      <h4>🎯 选型评分权重</h4>
+      <h4>选型评分权重</h4>
       <label class="lbl">目标场景
         <select id="scenario"></select>
       </label>
@@ -68,9 +71,9 @@
     <div class="filter-group">
       <h4>快捷开关</h4>
       <label class="chk"><input type="checkbox" id="excludeRisk"> 排除营销 / 赌博类</label>
-      <label class="chk"><input type="checkbox" id="favOnly"> 仅看收藏 ⭐</label>
-      <label class="chk"><input type="checkbox" id="noteOnly"> 仅看写过备注 📝</label>
-      <label class="chk"><input type="checkbox" id="verifiedOnly"> 仅看已有真实数据 ✓</label>
+      <label class="chk"><input type="checkbox" id="favOnly"> 仅看收藏</label>
+      <label class="chk"><input type="checkbox" id="noteOnly"> 仅看有备注</label>
+      <label class="chk"><input type="checkbox" id="verifiedOnly"> 仅看真实数据</label>
     </div>
   </aside>
 
@@ -78,14 +81,14 @@
   <section class="content">
 
     <div class="presets">
-      <span class="presets-label">⚡ 智能预设</span>
-      <button class="btn tiny" data-preset="prod">🚀 生产级首选<small>近90天提交 ∧ 宽松许可 ∧ 活跃</small></button>
-      <button class="btn tiny" data-preset="commercial">💼 商用安全<small>可商用 ∧ 无风险</small></button>
-      <button class="btn tiny" data-preset="commercialActive">✅ 商用且维护中<small>上面 + 近半年有提交</small></button>
-      <button class="btn tiny" data-preset="miniapp">🛍 Mini App 电商<small>可直接部署的商城</small></button>
-      <button class="btn tiny" data-preset="chinese">🇨🇳 中文友好<small>中文文档 / 中文社区</small></button>
-      <button class="btn tiny" data-preset="hot">🔥 高热度<small>出现 ≥3 次</small></button>
-      <button class="btn tiny" data-preset="starred">⭐ 有 Star 且活跃<small>星级 + 近 90 天提交</small></button>
+      <span class="presets-label">智能预设</span>
+      <button class="btn tiny" data-preset="prod">生产级首选<small>近90天提交 ∧ 宽松许可 ∧ 活跃</small></button>
+      <button class="btn tiny" data-preset="commercial">商用安全<small>可商用 ∧ 无风险</small></button>
+      <button class="btn tiny" data-preset="commercialActive">商用且维护中<small>上面 + 近半年有提交</small></button>
+      <button class="btn tiny" data-preset="miniapp">Mini App 电商<small>可直接部署的商城</small></button>
+      <button class="btn tiny" data-preset="chinese">中文友好<small>中文文档 / 中文社区</small></button>
+      <button class="btn tiny" data-preset="hot">高热度<small>出现 ≥3 次</small></button>
+      <button class="btn tiny" data-preset="starred">有 Star 且活跃<small>星级 + 近 90 天提交</small></button>
     </div>
 
     <div class="stats" id="stats"></div>
@@ -117,7 +120,7 @@
       <input type="search" id="search" placeholder="搜索名称 / 功能 / 标签，如：Mini App、转发、MIT…">
       <div class="viewtoggle" id="modeToggle">
         <button class="btn tiny active" data-mode="all">全部</button>
-        <button class="btn tiny" data-mode="fav">⭐ 收藏夹 <b id="favCount">0</b></button>
+        <button class="btn tiny" data-mode="fav">收藏夹 <b id="favCount">0</b></button>
       </div>
       <select id="sort">
         <option value="score">排序：选型评分</option>
@@ -145,7 +148,7 @@
 <div class="compare-bar" id="compareBar">
   <div class="cbinfo">已选 <b id="cmpCount">0</b> / 4 个项目</div>
   <div class="cbnames" id="cmpNames"></div>
-  <button class="btn" id="btnCompare">📊 开始对比</button>
+  <button class="btn" id="btnCompare">开始对比</button>
   <button class="btn ghost" id="btnCmpClear">清空</button>
 </div>
 
@@ -157,7 +160,7 @@
 <div class="modal-mask" id="cmpMask">
   <div class="modal wide-modal">
     <div class="modal-head">
-      <h3>📊 项目并排对比</h3>
+      <h3>项目并排对比</h3>
       <div>
         <button class="btn tiny" id="btnCmpMd">复制为 Markdown</button>
         <button class="btn tiny" id="btnCmpCsv">导出 CSV</button>
@@ -172,7 +175,7 @@
 <div class="modal-mask" id="colMask">
   <div class="modal">
     <div class="modal-head">
-      <h3>📡 采集新项目</h3>
+      <h3>采集新项目</h3>
       <button class="btn tiny ghost" data-close="colMask">✕</button>
     </div>
     <div class="tabs">
@@ -207,7 +210,7 @@
           </select></label>
         </div>
         <div class="colrow">
-          <button class="btn" id="btnSearch">🔍 搜索 GitHub</button>
+          <button class="btn" id="btnSearch">搜索 GitHub</button>
           <span class="hint">未认证配额：搜索 10 次/分钟，结果直接进候选池</span>
         </div>
         <div id="colApiResult"></div>

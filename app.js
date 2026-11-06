@@ -13,7 +13,7 @@
  * ============================================================ */
 const K = { favs: 'tg.favs', notes: 'tg.notes', custom: 'tg.custom', cand: 'tg.cand', w: 'tg.w', scen: 'tg.scenario', theme: 'tg.theme' };
 
-const COMM_LABEL = { yes: '可商用 ✓', caution: '有条件 ⚠', no: '不建议 ✕', unknown: '待核实 ?' };
+const COMM_LABEL = { yes: '可商用', caution: '有条件商用', no: '不建议商用', unknown: '待核实' };
 const COMM_CLASS = { yes: 'b-ok', caution: 'b-warn', no: 'b-dang', unknown: 'b-mute' };
 const MAINT_LABEL = { active: '活跃', maintained: '维护中', stale: '停更', unknown: '待核实' };
 const MAINT_CLASS = { active: 'b-ok', maintained: 'b-conf', stale: 'b-dang', unknown: 'b-mute' };
@@ -43,14 +43,14 @@ function sparkline(vals, w, h) {
 /* 选型场景 */
 const SCENARIOS = {
   all:       { label: '不限（按历史热度）', match: () => true },
-  shop:      { label: '🛍 Mini App / 电商',  match: p => p.cat === 'shop' },
-  channel:   { label: '📢 频道内容运营',     match: p => p.cat === 'manage' || p.cat === 'forward' },
-  forward:   { label: '🔁 转发 / RSS 同步',  match: p => p.cat === 'forward' },
-  ai:        { label: '🤖 AI 机器人',        match: p => p.cat === 'ai' },
-  framework: { label: '🧱 Bot 开发框架',     match: p => p.cat === 'framework' },
-  group:     { label: '👥 群组管理',         match: p => p.cat === 'manage' },
-  tool:      { label: '🧰 工具 / 文件',      match: p => p.cat === 'tool' },
-  awesome:   { label: '📚 资源导航',         match: p => p.cat === 'awesome' },
+  shop:      { label: 'Mini App / 电商',   match: p => p.cat === 'shop' },
+  channel:   { label: '频道内容运营',      match: p => p.cat === 'manage' || p.cat === 'forward' },
+  forward:   { label: '转发 / RSS 同步',   match: p => p.cat === 'forward' },
+  ai:        { label: 'AI 机器人',         match: p => p.cat === 'ai' },
+  framework: { label: 'Bot 开发框架',      match: p => p.cat === 'framework' },
+  group:     { label: '群组管理',          match: p => p.cat === 'manage' },
+  tool:      { label: '工具 / 文件',       match: p => p.cat === 'tool' },
+  awesome:   { label: '资源导航',          match: p => p.cat === 'awesome' },
 };
 
 /** 手动标记的中文友好项目（有中文 README / 中文作者的） */
@@ -453,7 +453,7 @@ function renderList(list) {
 
   if (!list.length) {
     const needMeta = ['d30', 'd90', 'y1'].includes(state.fresh) && !Object.keys(META).length;
-    el.innerHTML = `<div class="empty"><div class="big">🔍</div><p>没有符合条件的结果</p>
+    el.innerHTML = `<div class="empty"><div class="big">∅</div><p>没有符合条件的结果</p>
       ${needMeta ? `<p style="font-size:12.5px">「更新时间」筛选需要 GitHub API 数据，请先运行 <code>node fetch-github-meta.mjs</code></p>` : ''}
       <button class="btn" onclick="resetAll()">清空筛选</button></div>`;
     return;
@@ -462,7 +462,7 @@ function renderList(list) {
   /* ---- 收藏夹视图：可写备注 ---- */
   if (state.mode === 'fav') {
     el.innerHTML = `<div class="fav-head">
-        <div><b>⭐ 我的收藏夹</b> · ${FAVS.size} 个项目 · 备注实时保存</div>
+        <div><b>我的收藏夹</b> · ${FAVS.size} 个项目 · 备注实时保存</div>
         <div class="fav-actions">
           <button class="btn tiny" id="btnFavMd">复制为 Markdown</button>
           <button class="btn tiny" id="btnFavCsv">导出 CSV</button>
@@ -525,7 +525,7 @@ function renderList(list) {
           <div class="name">${esc(p.name)}${p.custom ? ' <span class="badge b-conf">采集</span>' : ''}${p.dead ? ' <span class="badge b-dang">已失效</span>' : ''}</div>
           <div class="meta" style="margin-top:4px">
             <span class="dot" style="background:${CATEGORIES[p.cat].color}"></span>${esc(CATEGORIES[p.cat].label)}
-            · ${esc(p.lang)}${p.stars != null ? ` · ★ ${p.stars}` : ''}${p.zh === 'yes' ? ' · 🇨🇳' : ''}</div>
+            · ${esc(p.lang)}${p.stars != null ? ` · ★ ${p.stars}` : ''}${p.zh === 'yes' ? ' · 中文' : ''}</div>
         </div></div>
         <p class="desc">${esc(p.desc)}</p>
         <div class="tagline">${p.tags.slice(0, 4).map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>
@@ -536,7 +536,7 @@ function renderList(list) {
           ${p.risk !== 'normal' ? `<span class="badge b-dang">${RISK_LABEL[p.risk]}</span>` : ''}
           ${up}
           <span class="badge b-mute" title="历史出现次数">热度 ${p.mentions}</span>
-          ${p.note_text ? '<span class="badge b-warn">📝 有笔记</span>' : ''}
+          ${p.note_text ? '<span class="badge b-warn">有笔记</span>' : ''}
         </div></article>`;
     }).join('');
   } else {
@@ -551,7 +551,7 @@ function renderList(list) {
       ${list.map(p => `<tr data-id="${p.id}" class="${state.compare.has(p.id) ? 'selected' : ''}">
         <td><span class="cmpbox ${state.compare.has(p.id) ? 'on' : ''}" data-cmp="${p.id}">${state.compare.has(p.id) ? '✓' : '+'}</span></td>
         <td><span class="score sm ${scoreClass(scoreOf(p).total)}">${scoreOf(p).total}</span></td>
-        <td><b>${esc(p.name)}</b>${p.note_text ? ' 📝' : ''}</td>
+        <td><b>${esc(p.name)}</b>${p.note_text ? ' <span class="badge b-warn">笔记</span>' : ''}</td>
         <td><span class="dot" style="background:${CATEGORIES[p.cat].color};display:inline-block;margin-right:5px"></span>${esc(CATEGORIES[p.cat].label)}</td>
         <td>${esc(p.lang)}</td><td>${esc(p.lic || '待核实')}</td>
         <td><span class="badge ${COMM_CLASS[p.comm]}">${COMM_LABEL[p.comm]}</span></td>
@@ -573,7 +573,7 @@ function renderList(list) {
     FAVS.has(id) ? FAVS.delete(id) : FAVS.add(id);
     store.set(K.favs, [...FAVS]);
     DATA.forEach(p => p.isFav = FAVS.has(p.id));
-    toast(FAVS.has(id) ? '已加入收藏 ⭐' : '已取消收藏');
+    toast(FAVS.has(id) ? '已加入收藏' : '已取消收藏');
     render();
   }));
   el.querySelectorAll('[data-cmp]').forEach(n => n.addEventListener('click', e => {
@@ -722,7 +722,7 @@ function openDrawer(id) {
       ${row('数据可信度', { high: '高', medium: '中', low: '低' }[p.conf] || '低')}
     </dl></div>
 
-    <div class="dsec"><h4>📝 我的调研笔记</h4>
+    <div class="dsec"><h4>我的调研笔记</h4>
       <textarea class="note" id="drawerNote" data-note="${p.id}"
         placeholder="能不能用？坑在哪？要不要采用？对比结论…">${esc(p.note_text)}</textarea>
       <div class="hint" id="noteHint">自动保存到本地浏览器</div></div>
@@ -952,7 +952,7 @@ function toCSV(list) {
 }
 function exportCSV(list, isFav) { download(isFav ? 'telegram-favorites.csv' : 'telegram-projects.csv', toCSV(list), 'text/csv'); }
 function favMarkdown(list) {
-  return ['# ⭐ Telegram 项目收藏夹', '', `> 导出时间：${new Date().toLocaleString()} · 共 ${list.length} 个项目`, '',
+  return ['# Telegram 项目收藏夹', '', `> 导出时间：${new Date().toLocaleString()} · 共 ${list.length} 个项目`, '',
     ...list.map(p => [
       `## ${p.name}${p.isFav ? '' : ''}`,
       `- 仓库：${p.url}`,
@@ -974,7 +974,7 @@ function renderChips() {
     chips.push([g.source().find(o => String(o[0]) === String(v))?.[1] || v, () => state[g.key].delete(v)])));
   if (state.fresh !== 'all') chips.push(['时间：' + FRESH_OPTIONS.find(o => o[0] === state.fresh)[1], () => state.fresh = 'all']);
   if (state.minMentions > 0) chips.push([`热度 ≥ ${state.minMentions}`, () => state.minMentions = 0]);
-  [['excludeRisk', '排除高风险'], ['favOnly', '仅收藏 ⭐'], ['noteOnly', '有备注 📝'], ['verifiedOnly', '仅真实数据 ✓']]
+  [['excludeRisk', '排除高风险'], ['favOnly', '仅收藏'], ['noteOnly', '有备注'], ['verifiedOnly', '仅真实数据']]
     .forEach(([k, l]) => { if (state[k]) chips.push([l, () => state[k] = false]); });
   if (state.scenario !== 'all') chips.push(['场景：' + SCENARIOS[state.scenario].label, () => { state.scenario = 'all'; $('#scenario').value = 'all'; store.set(K.scen, 'all'); }]);
 
@@ -1034,7 +1034,7 @@ function init() {
   const missing = DATA.length - apiCount;
   $('#noticeMissing').textContent = missing > 0
     ? `还有 ${missing} 个仓库是推断值，运行 node fetch-github-meta.mjs --missing && node bake-meta.mjs 可补齐。`
-    : '全部仓库均已核实 🎉';
+    : '全部仓库均已核实';
 
   // 主题
   const t = store.get(K.theme, null); if (t) document.documentElement.dataset.theme = t;
