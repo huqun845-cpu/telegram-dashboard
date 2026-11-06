@@ -270,5 +270,16 @@ const deadClaims = T.DATA.filter(p => p.note && /已不存在|已失效/.test(p.
 check('没有「备注说仓库已不存在、但 API 又能抓到了」的条目', deadClaims.length === 0,
   deadClaims.map(p => p.id).join('; ') || '全部一致');
 
+// 404 仓库必须被诚实标记：不能既没说明、又残留 star/提交时间（那等于伪造抓取结果）
+const deadRows = T.DATA.filter(p => p.dead);
+const deadBad = deadRows.filter(p =>
+  !/已不存在|已失效/.test(p.note || '') || p.src === 'api' || p.stars != null || p.pushed != null);
+check(`失效仓库标记完整（共 ${deadRows.length} 个）`, deadBad.length === 0,
+  deadBad.map(p => `${p.id}: note=${!!p.note} src=${p.src} stars=${p.stars} pushed=${p.pushed}`).join('; ') || '全部完整');
+// 反向保护：曾抓到过（src:'api'）但这次不在 meta.json 里的，必须已被标 dead，否则说明 bake 漏标
+const orphanApi = T.DATA.filter(p => p.src === 'api' && !T.META[p.id] && !p.dead);
+check('没有「API 抓不到却未标记失效」的孤儿条目', orphanApi.length === 0,
+  orphanApi.map(p => p.id).join('; ') || '全部一致');
+
 console.log(`\n${'='.repeat(46)}\n结果：${pass_} 通过 / ${fail_} 失败\n${'='.repeat(46)}`);
 process.exit(fail_ ? 1 : 0);

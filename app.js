@@ -22,6 +22,24 @@ const LICKIND_COLOR = { permissive: '#22c8a0', copyleft: '#f5a524', unknown: '#6
 const RISK_LABEL = { normal: '正常', marketing: '营销群发', gambling: '赌博' };
 const LANG_COLORS = ['#4f8cff', '#22c8a0', '#a06bff', '#f5a524', '#ff6b9d', '#38bdf8', '#ff5d5d', '#8a94a6', '#7dd3fc'];
 
+/* 每日 Star 快照（history.js 注入）。缺失时整个趋势模块自动降级为不显示 */
+const HIST = (typeof window !== 'undefined' && Array.isArray(window.STAR_HISTORY)) ? window.STAR_HISTORY : [];
+
+/* 手写迷你趋势线：不引 ECharts/Chart.js，省 100KB+ 且 file:// 直开可用 */
+function sparkline(vals, w, h) {
+  if (!Array.isArray(vals) || vals.length < 2) return '';
+  w = w || 132; h = h || 30;
+  const pad = 2, min = Math.min(...vals), max = Math.max(...vals), span = (max - min) || 1;
+  const pts = vals.map((v, i) => {
+    const x = pad + i * (w - pad * 2) / (vals.length - 1);
+    const y = pad + (1 - (v - min) / span) * (h - pad * 2);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+  return `<svg class="spark" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" aria-hidden="true">`
+    + `<polyline points="${pts}" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>`
+    + `</svg>`;
+}
+
 /* 选型场景 */
 const SCENARIOS = {
   all:       { label: '不限（按历史热度）', match: () => true },
@@ -101,6 +119,11 @@ function enhance(p) {
   }
   // 烘焙过的条目：maint 已在 data.js 里按真实提交时间写好，这里只兜底
   if (!m && o.baked && o.days != null) o.maint = maintFromDays(o.days);
+  // 仓库已被 GitHub 404：不再宣称任何维护状态，Star/提交时间一律作废
+  if (p.dead) {
+    o.dead = true; o.hasApi = false; o.maint = 'unknown';
+    o.stars = null; o.forks = null; o.pushed = null; o.days = null;
+  }
   if (o.lic && !m) o.licKind = o.licKind || 'unknown';
   if (o.licKind === 'unknown' && o.lic) {
     const s = String(o.lic).toLowerCase();
@@ -119,6 +142,13 @@ function enhance(p) {
   o.verified = o.conf === 'high' || o.hasApi;
   o.isFav = FAVS.has(o.id);
   o.note_text = NOTES[o.id] || '';
+
+  // Star 趋势：从每日快照里取最近 14 个有效点（缺失天直接跳过，不补 0）
+  const series = HIST.map(h => h && h.s ? h.s[o.id] : null).filter(v => typeof v === 'number');
+  o.spark = series.slice(-14);
+  o.star7 = o.spark.length >= 2
+    ? o.spark[o.spark.length - 1] - o.spark[Math.max(0, o.spark.length - 8)]
+    : null;
   return o;
 }
 
@@ -484,14 +514,15 @@ function renderList(list) {
   /* ---- 卡片视图 ---- */
   if (state.view === 'card') {
     el.innerHTML = list.map(p => {
-      const up = p.pushed ? `<span class="badge b-conf" title="GitHub 最近提交">提交 ${p.pushed}（${fmtDays(p.days)}）</span>`
+      const up = p.dead ? '<span class="badge b-dang" title="GitHub 返回 404，仓库已删除或改名">仓库已失效</span>'
+        : p.pushed ? `<span class="badge b-conf" title="GitHub 最近提交">提交 ${p.pushed}（${fmtDays(p.days)}）</span>`
         : '<span class="badge b-mute">提交待核实</span>';
       return `<article class="pcard ${state.compare.has(p.id) ? 'selected' : ''}" data-id="${p.id}">
         <span class="fav ${FAVS.has(p.id) ? 'on' : ''}" data-fav="${p.id}" title="收藏">★</span>
         <span class="cmpbox ${state.compare.has(p.id) ? 'on' : ''}" data-cmp="${p.id}" title="加入对比">${state.compare.has(p.id) ? '✓' : '+'}</span>
         ${scoreBadge(p)}
         <div class="row1"><div>
-          <div class="name">${esc(p.name)}${p.custom ? ' <span class="badge b-conf">采集</span>' : ''}</div>
+          <div class="name">${esc(p.name)}${p.custom ? ' <span class="badge b-conf">采集</span>' : ''}${p.dead ? ' <span class="badge b-dang">已失效</span>' : ''}</div>
           <div class="meta" style="margin-top:4px">
             <span class="dot" style="background:${CATEGORIES[p.cat].color}"></span>${esc(CATEGORIES[p.cat].label)}
             · ${esc(p.lang)}${p.stars != null ? ` · ★ ${p.stars}` : ''}${p.zh === 'yes' ? ' · 🇨🇳' : ''}</div>
@@ -658,6 +689,7 @@ function openDrawer(id) {
       ${p.zh === 'yes' ? '<span class="badge b-ok">中文友好</span>' : ''}
       ${p.risk !== 'normal' ? `<span class="badge b-dang">${RISK_LABEL[p.risk]}</span>` : ''}
       ${p.custom ? '<span class="badge b-conf">采集入库</span>' : ''}
+      ${p.dead ? '<span class="badge b-dang" title="GitHub 返回 404">仓库已失效</span>' : ''}
     </div>
     <p class="desc-full">${esc(p.desc)}</p>
 
@@ -678,7 +710,11 @@ function openDrawer(id) {
       ${row('商用结论', COMM_LABEL[p.comm])}
       ${row('维护状态', `${MAINT_LABEL[p.maint]}<span class="hint">${p.hasApi ? '（按真实提交时间判定）' : '（推断）'}</span>`)}
       ${row('最近提交', p.pushed ? `${esc(p.pushed)} · ${fmtDays(p.days)}` : '<span style="color:var(--warn)">待核实</span>')}
-      ${row('Star / Fork', p.stars != null ? `★ ${p.stars} / ${p.forks ?? '—'}` : '待核实')}
+      ${row('Star / Fork', p.stars != null ? `★ ${p.stars} / ${p.forks ?? '—'}` : (p.dead ? '<span style="color:var(--danger)">仓库已失效</span>' : '待核实'))}
+      ${row('Star 趋势', p.spark.length >= 2
+        ? `<span class="sparkwrap">${sparkline(p.spark)}</span> <b class="${p.star7 > 0 ? 'up' : p.star7 < 0 ? 'down' : ''}">${p.star7 > 0 ? '+' : ''}${p.star7 ?? 0}</b>`
+          + `<span class="hint">近 ${p.spark.length} 天（${esc(HIST.find(h => h.s && h.s[p.id] != null)?.d || '')} 起）</span>`
+        : `<span class="hint">趋势数据积累中（已记录 ${p.spark.length}/2 天，明日开始显示）</span>`)}
       ${row('历史热度', p.mentions + ' 次出现 · 最近 ' + esc(p.seen))}
       ${row('数据来源', p.hasApi
         ? '<span class="badge b-ok">GitHub API 实测</span>' + (p.baked && !META[p.id] ? ' <span class="hint">已烘焙进 data.js</span>' : '')

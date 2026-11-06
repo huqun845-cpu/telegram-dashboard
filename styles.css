@@ -356,3 +356,9 @@ textarea#colText{
 }
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
+
+/* Star 趋势迷你图（详情抽屉） */
+.sparkwrap{display:inline-block;vertical-align:middle;line-height:0;color:var(--accent2)}
+.spark{display:block}
+.up{color:var(--accent2)}
+.down{color:var(--danger)}

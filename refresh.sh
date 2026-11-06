@@ -92,8 +92,18 @@ if [ "$BEFORE" = "$AFTER" ] && [ -z "$DIRTY" ]; then
 fi
 [ -n "$DIRTY" ] && warn "检测到未提交的改动，一并发布"
 
+# Star 快照只在真正要发布时写：无变化的日子不必为趋势图多推一次线上
+node snapshot-history.mjs || warn "Star 快照写入失败，趋势图本次不更新（不影响数据发布）"
+
 bold "▶ [4/4] 发布到线上"
-./deploy.sh gh    || bad "GitHub Pages 发布失败"
-SKIP_TEST=1 ./deploy.sh surge || bad "Surge 发布失败"
+# 发布失败必须以非 0 退出，否则定时任务会误以为「已上线」
+if ! ./deploy.sh gh; then
+  bad "GitHub Pages 发布失败（数据已提交但线上未更新）"
+  exit 1
+fi
+if ! SKIP_TEST=1 ./deploy.sh surge; then
+  bad "Surge 发布失败（GitHub Pages 已成功，Surge 未更新）"
+  exit 1
+fi
 
 bold "════════ 刷新结束 ✅ ════════"

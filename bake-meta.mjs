@@ -20,6 +20,8 @@
  * 附带效果（自动备注）：
  *   无 LICENSE 的仓库 → 备注「法律上默认保留所有权利」
  *   已归档的仓库       → 备注「作者已停止维护」
+ *   已 404 的仓库     → 标 dead:true、清空 star/提交时间、备注「仓库已不存在」
+ *                        （src:'api' 但 meta.json 里没有 = 上次抓到过、这次查无此人）
  *
  * 用法：
  *   node bake-meta.mjs            # 烘焙
@@ -59,10 +61,26 @@ function commOf(licKind, original) {
   return 'unknown';                                  // 无协议 ≠ 可商用，保持待核实
 }
 
-const stats = { baked: 0, licChanged: 0, maintChanged: 0, commChanged: 0, noLicense: 0, archived: 0, autoNoted: 0 };
+const stats = { baked: 0, licChanged: 0, maintChanged: 0, commChanged: 0, noLicense: 0, archived: 0, autoNoted: 0, dead: 0 };
+const DEAD_NOTE = '⚠️ 仓库已不存在（GitHub API 返回 404，可能已删除或改名），Star / 提交时间已失效，许可证为历史快照';
 const baked = PROJECTS.map(p => {
   const m = okMeta[p.id];
-  if (!m) return { ...p };
+  if (!m) {
+    /* 曾经抓到过（src:'api' 或已标 dead）而现在不在 meta.json 里 → 仓库 404。
+       若原样保留旧值，面板会把「查无此人」显示成「0 star、还能查到提交时间」，等于伪造数据。 */
+    if (p.dead || p.src === 'api') {
+      stats.dead++;
+      // 已有手写失效说明就原样保留（可能补充了「作者账号已注销」等关键信息），避免被覆盖
+      const hadNote = /仓库已不存在|已失效/.test(String(p.note || ''));
+      return {
+        ...p, dead: true,
+        pushedAt: null, stars: null, forks: null,
+        maint: 'unknown',          // 抓不到就不能再声称活跃/维护中
+        note: hadNote ? p.note : [DEAD_NOTE, p.note].filter(Boolean).join('；'),
+      };
+    }
+    return { ...p };
+  }
   const o = { ...p };
   const licKind = m.licenseKind || (m.license
     ? (/^(MIT|Apache|BSD|ISC|Unlicense|0BSD|CC0)/i.test(m.license) ? 'permissive' : /GPL/i.test(m.license) ? 'copyleft' : 'unknown')
@@ -103,6 +121,7 @@ const baked = PROJECTS.map(p => {
 console.log(`📊 meta.json 中有效数据：${Object.keys(okMeta).length} 个 → 烘焙 ${stats.baked} 条`);
 console.log(`   许可证修正 ${stats.licChanged} · 维护状态修正 ${stats.maintChanged} · 商用结论修正 ${stats.commChanged}`);
 console.log(`   其中无协议 ${stats.noLicense} 个 · 已归档 ${stats.archived} 个 · 自动补备注 ${stats.autoNoted} 条`);
+if (stats.dead) console.log(`   ⚠️ 失效仓库 ${stats.dead} 个：已标 dead:true 并清空 Star/提交时间 → ${PROJECTS.filter(p => (!okMeta[p.id]) && (p.dead || p.src === 'api')).map(p => p.id).join(', ')}`);
 
 /* ---------- 3. 序列化（单引号 + 转义） ---------- */
 const esc = s => String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
@@ -131,7 +150,10 @@ function emit(p) {
   L.push(`  { id:${q(p.id)}, name:${q(p.name)}, url:${q(p.url)}, lang:${q(p.lang)}, cat:${q(p.cat)},`);
   L.push(`    desc:${q(p.desc)},`);
   L.push(`    tags:${val(p.tags)}, lic:${val(p.lic)}, licKind:${q(p.licKind)}, comm:${q(p.comm)}, maint:${q(p.maint)},`);
-  if (p.src === 'api') {
+  if (p.dead) {
+    // 不写 src:'api'：条目已无可信 API 数据，界面据此显示「待核实」而非「已核实」
+    L.push('    pushedAt:null, stars:null, forks:null, dead:true,');
+  } else if (p.src === 'api') {
     L.push('    ' + [`pushedAt:${val(p.pushedAt)}`, `stars:${val(p.stars)}`, `forks:${val(p.forks)}`, "src:'api'"].join(', ') + ',');
   }
   const tail = `    seen:${q(p.seen)}, mentions:${p.mentions}, risk:${q(p.risk)}, conf:${q(p.conf)}`;
@@ -197,7 +219,7 @@ out += `];\n\n/* 便于其它脚本读取 */\nif (typeof module !== 'undefined' 
 await writeFile('/tmp/data.baked.js', out, 'utf8');
 const verifyRequire = createRequire('/tmp/x.js');
 const reBaked = verifyRequire('/tmp/data.baked.js');
-const ADDED = new Set(['pushedAt', 'stars', 'forks', 'src']);
+const ADDED = new Set(['pushedAt', 'stars', 'forks', 'src', 'dead']);
 const CHANGED = new Set(['lic', 'licKind', 'comm', 'maint', 'note']);   // 会被 API 真值有意覆盖的字段
 const problems = [];
 if (reBaked.PROJECTS.length !== baked.length) problems.push(`条目数不一致 ${baked.length} → ${reBaked.PROJECTS.length}`);
@@ -213,7 +235,7 @@ PROJECTS.forEach((orig, i) => {
   // 2) 该变的字段必须等于烘焙后的值
   const expect = baked[i];
   CHANGED.forEach(k => { if (a[k] !== expect[k]) problems.push(`${orig.id}.${k}（烘焙值不一致）: 期望 ${JSON.stringify(expect[k])} 实得 ${JSON.stringify(a[k])}`); });
-  if (okMeta[orig.id]) ADDED.forEach(k => { if (a[k] !== expect[k]) problems.push(`${orig.id}.${k}（新增字段不一致）`); });
+  if (okMeta[orig.id] || orig.dead) ADDED.forEach(k => { if (a[k] !== expect[k]) problems.push(`${orig.id}.${k}（新增字段不一致）`); });
 });
 if (JSON.stringify(reBaked.CATEGORIES) !== JSON.stringify(CATEGORIES)) problems.push('CATEGORIES 不一致');
 if (JSON.stringify(reBaked.LANGS) !== JSON.stringify(LANGS)) problems.push('LANGS 不一致');
