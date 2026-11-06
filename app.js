@@ -11,17 +11,17 @@
 /* ============================================================
  * 0. 常量
  * ============================================================ */
-const K = { favs: 'tg.favs', notes: 'tg.notes', custom: 'tg.custom', cand: 'tg.cand', w: 'tg.w', scen: 'tg.scenario', theme: 'tg.theme' };
+const K = { favs: 'tg.favs', notes: 'tg.notes', custom: 'tg.custom', cand: 'tg.cand', w: 'tg.w', scen: 'tg.scenario', theme: 'tg.theme2' };
 
 const COMM_LABEL = { yes: '可商用', caution: '有条件商用', no: '不建议商用', unknown: '待核实' };
 const COMM_CLASS = { yes: 'b-ok', caution: 'b-warn', no: 'b-dang', unknown: 'b-mute' };
 const MAINT_LABEL = { active: '活跃', maintained: '维护中', stale: '停更', unknown: '待核实' };
 const MAINT_CLASS = { active: 'b-ok', maintained: 'b-conf', stale: 'b-dang', unknown: 'b-mute' };
 const LICKIND_LABEL = { permissive: '宽松许可', copyleft: '传染性许可', unknown: '未知/无协议' };
-const LICKIND_COLOR = { permissive: '#22c8a0', copyleft: '#f5a524', unknown: '#69768d' };
+const LICKIND_COLOR = { permissive: '#8fd694', copyleft: '#f0c674', unknown: '#7c7c7c' };
 const RISK_LABEL = { normal: '正常', marketing: '营销群发', gambling: '赌博' };
-/* 图表用低饱和冷色阶梯（同色系不同明度），避免五彩斑斓的廉价感 */
-const LANG_COLORS = ['#2f6fbd', '#4a86c9', '#679dcf', '#84b3d6', '#a1c6dd', '#b9d1de', '#7c8fa8', '#98a6b8', '#b4bfcc'];
+/* 图表色：OSS Insight 式的柠檬黄 + 中性灰阶，不用彩虹色 */
+const LANG_COLORS = ['#ffe895', '#e6c96f', '#c9ae5f', '#a3a3a3', '#c4c4c4', '#7c7c7c', '#f0dca6', '#b09a63', '#8e8e8e'];
 
 /* 每日 Star 快照（history.js 注入）。缺失时整个趋势模块自动降级为不显示 */
 const HIST = (typeof window !== 'undefined' && Array.isArray(window.STAR_HISTORY)) ? window.STAR_HISTORY : [];
@@ -204,11 +204,11 @@ const FRESH_OPTIONS = [['all', '全部'], ['d30', '近 30 天'], ['d90', '近 90
 const GROUPS = [
   { key: 'cats', title: '分类', field: 'cat', source: () => Object.keys(CATEGORIES).map(k => [k, CATEGORIES[k].label, CATEGORIES[k].color]) },
   { key: 'langs', title: '技术栈', field: 'lang', source: () => [...new Set(DATA.map(p => p.lang))].sort().map(k => [k, k, null]) },
-  { key: 'comms', title: '商用友好度', field: 'comm', source: () => Object.keys(COMM_LABEL).map(k => [k, COMM_LABEL[k], k === 'yes' ? '#22c8a0' : k === 'caution' ? '#f5a524' : k === 'no' ? '#ff5d5d' : '#69768d']) },
+  { key: 'comms', title: '商用友好度', field: 'comm', source: () => Object.keys(COMM_LABEL).map(k => [k, COMM_LABEL[k], k === 'yes' ? '#8fd694' : k === 'caution' ? '#f0c674' : k === 'no' ? '#ff9b9b' : '#7c7c7c']) },
   { key: 'licKinds', title: '许可证类型', field: 'licKind', source: () => Object.keys(LICKIND_LABEL).map(k => [k, LICKIND_LABEL[k], LICKIND_COLOR[k]]) },
-  { key: 'maints', title: '维护状态', field: 'maint', source: () => Object.keys(MAINT_LABEL).map(k => [k, MAINT_LABEL[k], k === 'active' ? '#22c8a0' : k === 'maintained' ? '#4f8cff' : k === 'stale' ? '#ff5d5d' : '#69768d']) },
-  { key: 'zhs', title: '中文友好', field: 'zh', source: () => [['yes', '中文文档 / 中文社区', '#22c8a0'], ['no', '仅英文', '#69768d']] },
-  { key: 'risks', title: '风险等级', field: 'risk', source: () => Object.keys(RISK_LABEL).map(k => [k, RISK_LABEL[k], k === 'normal' ? '#22c8a0' : k === 'marketing' ? '#f5a524' : '#ff5d5d']) },
+  { key: 'maints', title: '维护状态', field: 'maint', source: () => Object.keys(MAINT_LABEL).map(k => [k, MAINT_LABEL[k], k === 'active' ? '#8fd694' : k === 'maintained' ? '#a9c7e8' : k === 'stale' ? '#ff9b9b' : '#7c7c7c']) },
+  { key: 'zhs', title: '中文友好', field: 'zh', source: () => [['yes', '中文文档 / 中文社区', '#8fd694'], ['no', '仅英文', '#7c7c7c']] },
+  { key: 'risks', title: '风险等级', field: 'risk', source: () => Object.keys(RISK_LABEL).map(k => [k, RISK_LABEL[k], k === 'normal' ? '#8fd694' : k === 'marketing' ? '#f0c674' : '#ff9b9b']) },
 ];
 
 /* 智能预设 */
@@ -417,18 +417,18 @@ function renderCharts(list) {
 
   barChart($('#chartMaint'), Object.keys(MAINT_LABEL).map(k => ({
     key: k, label: MAINT_LABEL[k],
-    color: k === 'active' ? '#22c8a0' : k === 'maintained' ? '#4f8cff' : k === 'stale' ? '#ff5d5d' : '#69768d',
+    color: k === 'active' ? '#8fd694' : k === 'maintained' ? '#a9c7e8' : k === 'stale' ? '#ff9b9b' : '#7c7c7c',
     value: list.filter(p => p.maint === k).length, active: state.maints.has(k),
   })), v => { toggleSet('maints', v); render(); });
 
   // 更新时间分桶（真实提交）
   const buckets = [
-    { key: 'b30', label: '1 个月内', max: 30, color: '#22c8a0' },
-    { key: 'b90', label: '1-3 个月', max: 90, color: '#4f8cff' },
-    { key: 'b180', label: '3-6 个月', max: 180, color: '#a06bff' },
-    { key: 'b365', label: '6-12 个月', max: 365, color: '#f5a524' },
-    { key: 'bold', label: '1 年以上', max: Infinity, color: '#ff5d5d' },
-    { key: 'none', label: '待核实', max: null, color: '#69768d' },
+    { key: 'b30', label: '1 个月内', max: 30, color: '#8fd694' },
+    { key: 'b90', label: '1-3 个月', max: 90, color: '#a9c7e8' },
+    { key: 'b180', label: '3-6 个月', max: 180, color: '#c0b3f0' },
+    { key: 'b365', label: '6-12 个月', max: 365, color: '#f0c674' },
+    { key: 'bold', label: '1 年以上', max: Infinity, color: '#ff9b9b' },
+    { key: 'none', label: '待核实', max: null, color: '#7c7c7c' },
   ];
   const prev = buckets.map(b => ({ ...b, prev: b.max })).map((b, i) => b);
   const rows = buckets.map((b, i) => {
@@ -699,7 +699,7 @@ function openDrawer(id) {
       <div class="scorerow"><b class="score big ${scoreClass(s.total)}">${s.total}</b>
         <div class="scorebars">
           ${[['商用许可', s.lic], ['中文文档', s.zh], ['维护活跃', s.act], ['功能匹配', s.rel]].map(([k, v]) =>
-            `<div class="sb"><span>${k}</span><i><b style="width:${v}%;background:${v >= 75 ? '#22c8a0' : v >= 55 ? '#4f8cff' : v >= 40 ? '#f5a524' : '#ff5d5d'}"></b></i><em>${v}</em></div>`).join('')}
+            `<div class="sb"><span>${k}</span><i><b style="width:${v}%;background:${v >= 75 ? '#8fd694' : v >= 55 ? '#a9c7e8' : v >= 40 ? '#f0c674' : '#ff9b9b'}"></b></i><em>${v}</em></div>`).join('')}
         </div></div>
       <div class="hint">权重可在左侧调整；场景：${esc(SCENARIOS[state.scenario].label)}</div>
     </div>
