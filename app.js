@@ -20,7 +20,8 @@ const MAINT_CLASS = { active: 'b-ok', maintained: 'b-conf', stale: 'b-dang', unk
 const LICKIND_LABEL = { permissive: '宽松许可', copyleft: '传染性许可', unknown: '未知/无协议' };
 const LICKIND_COLOR = { permissive: '#22c8a0', copyleft: '#f5a524', unknown: '#69768d' };
 const RISK_LABEL = { normal: '正常', marketing: '营销群发', gambling: '赌博' };
-const LANG_COLORS = ['#4f8cff', '#22c8a0', '#a06bff', '#f5a524', '#ff6b9d', '#38bdf8', '#ff5d5d', '#8a94a6', '#7dd3fc'];
+/* 图表用低饱和冷色阶梯（同色系不同明度），避免五彩斑斓的廉价感 */
+const LANG_COLORS = ['#2f6fbd', '#4a86c9', '#679dcf', '#84b3d6', '#a1c6dd', '#b9d1de', '#7c8fa8', '#98a6b8', '#b4bfcc'];
 
 /* 每日 Star 快照（history.js 注入）。缺失时整个趋势模块自动降级为不显示 */
 const HIST = (typeof window !== 'undefined' && Array.isArray(window.STAR_HISTORY)) ? window.STAR_HISTORY : [];
