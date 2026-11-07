@@ -1,6 +1,6 @@
 /* meta.generated.js — 由 fetch-github-meta.mjs 自动生成
  * 已有真实数据：86 / 89 个仓库
- * 最新一次提交时间：2026-11-06T19:08:11Z
+ * 最新一次提交时间：2026-11-06T23:24:51Z
  */
 window.GITHUB_META = {
   "chanadmin": {
@@ -58,10 +58,10 @@ window.GITHUB_META = {
   },
   "langbot": {
     "pushedAt": "2026-11-06T18:50:38Z",
-    "updatedAt": "2026-11-06T20:19:36Z",
+    "updatedAt": "2026-11-07T00:44:04Z",
     "createdAt": "2022-12-07T08:48:02Z",
-    "stars": 18765,
-    "forks": 1687,
+    "stars": 18769,
+    "forks": 1688,
     "openIssues": 119,
     "license": "Apache-2.0",
     "licenseKind": "permissive",
@@ -275,7 +275,7 @@ window.GITHUB_META = {
     "updatedAt": "2026-11-06T12:35:59Z",
     "createdAt": "2025-02-17T10:58:11Z",
     "stars": 1783,
-    "forks": 259,
+    "forks": 260,
     "openIssues": 2,
     "license": "MIT",
     "licenseKind": "permissive",
@@ -1032,7 +1032,7 @@ window.GITHUB_META = {
     "updatedAt": "2026-11-06T12:35:59Z",
     "createdAt": "2025-02-17T10:58:11Z",
     "stars": 1783,
-    "forks": 259,
+    "forks": 260,
     "openIssues": 2,
     "license": "MIT",
     "licenseKind": "permissive",
@@ -1550,9 +1550,9 @@ window.GITHUB_META = {
   },
   "pagermaidpyro": {
     "pushedAt": "2026-10-05T13:56:49Z",
-    "updatedAt": "2026-11-06T13:29:52Z",
+    "updatedAt": "2026-11-06T23:27:32Z",
     "createdAt": "2022-05-21T15:08:43Z",
-    "stars": 813,
+    "stars": 812,
     "forks": 97,
     "openIssues": 6,
     "license": "AGPL-3.0",
@@ -1787,12 +1787,12 @@ window.GITHUB_META = {
     "defaultBranch": "main"
   },
   "paperless": {
-    "pushedAt": "2026-11-06T19:08:11Z",
-    "updatedAt": "2026-11-06T16:10:05Z",
+    "pushedAt": "2026-11-06T23:24:51Z",
+    "updatedAt": "2026-11-06T23:24:54Z",
     "createdAt": "2026-02-13T20:39:49Z",
     "stars": 15,
     "forks": 2,
-    "openIssues": 1,
+    "openIssues": 0,
     "license": "GPL-3.0",
     "licenseKind": "copyleft",
     "archived": false,
@@ -2067,8 +2067,8 @@ window.GITHUB_META = {
     "defaultBranch": "main"
   },
   "hermanosender": {
-    "pushedAt": "2026-11-06T15:40:38Z",
-    "updatedAt": "2026-11-06T15:40:43Z",
+    "pushedAt": "2026-11-06T21:17:08Z",
+    "updatedAt": "2026-11-06T21:17:12Z",
     "createdAt": "2025-11-07T17:48:50Z",
     "stars": 0,
     "forks": 0,
@@ -2113,7 +2113,7 @@ window.GITHUB_META = {
   },
   "awesometg": {
     "pushedAt": "2026-11-02T23:40:55Z",
-    "updatedAt": "2026-11-06T19:16:12Z",
+    "updatedAt": "2026-11-07T00:44:37Z",
     "createdAt": "2016-07-01T21:11:51Z",
     "stars": 6201,
     "forks": 686,
