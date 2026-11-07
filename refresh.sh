@@ -33,7 +33,20 @@ ok()   { printf '\033[32m✅ %s\033[0m\n' "$*"; }
 warn() { printf '\033[33m⚠️  %s\033[0m\n' "$*"; }
 bad()  { printf '\033[31m❌ %s\033[0m\n' "$*"; }
 
+# Telegram 推送凭据放在仓库外（仓库公开 + Surge 整目录上传，放进来等于泄露）
+TG_ENV="$HOME/.config/tg-dashboard/notify.env"
+if [ -f "$TG_ENV" ]; then
+  set -a; . "$TG_ENV"; set +a
+fi
+tg_notify() {  # $1 = published | nochange | failed
+  [ -f "$TG_ENV" ] || return 0
+  node notify-telegram.mjs "$1" || warn "Telegram 推送失败（不影响数据发布）"
+}
+
 bold "════════ 刷新开始 $STAMP ════════"
+
+# 留一份上一次的数据，推送时用来算 Star 变化
+cp meta.json /tmp/tg_prev_meta.json 2>/dev/null || true
 
 # ── 0. 认证（未认证只有 60 次/小时，抓不完 88 个）────────────────
 if [ -z "${GITHUB_TOKEN:-}" ]; then
@@ -62,7 +75,14 @@ if [ "$DRY_RUN" = "1" ]; then
   warn "dry-run：跳过写盘与发布"
   exit 0
 fi
-node bake-meta.mjs || { bad "烘焙失败（data.js 已自动回滚）"; exit 1; }
+BAKE_OUT=$(node bake-meta.mjs 2>&1) || {
+  printf '%s\n' "$BAKE_OUT"
+  bad "烘焙失败（data.js 已自动回滚）"
+  tg_notify failed
+  exit 1
+}
+printf '%s\n' "$BAKE_OUT"
+printf '%s\n' "$BAKE_OUT" > /tmp/tg_bake.log
 
 AFTER=$(shasum -a 256 data.js meta.json 2>/dev/null | shasum -a 256 | cut -c1-12)
 
@@ -75,6 +95,7 @@ if printf '%s' "$TEST_OUT" | grep -qE "结果：[0-9]+ 通过 / 0 失败"; then
 else
   bad "测试未全部通过，拒绝发布。失败详情："
   printf '%s\n' "$TEST_OUT" | grep -aE "✗|失败" | head -20
+  tg_notify failed
   exit 1
 fi
 
@@ -87,6 +108,7 @@ fi
 DIRTY=$(git status --porcelain 2>/dev/null)
 if [ "$BEFORE" = "$AFTER" ] && [ -z "$DIRTY" ]; then
   ok "数据无变化（data.js / meta.json 校验和一致），跳过发布"
+  tg_notify nochange
   bold "════════ 刷新结束（无变更）════════"
   exit 0
 fi
@@ -99,11 +121,15 @@ bold "▶ [4/4] 发布到线上"
 # 发布失败必须以非 0 退出，否则定时任务会误以为「已上线」
 if ! ./deploy.sh gh; then
   bad "GitHub Pages 发布失败（数据已提交但线上未更新）"
+  tg_notify failed
   exit 1
 fi
 if ! SKIP_TEST=1 ./deploy.sh surge; then
   bad "Surge 发布失败（GitHub Pages 已成功，Surge 未更新）"
+  tg_notify failed
   exit 1
 fi
+
+tg_notify published
 
 bold "════════ 刷新结束 ✅ ════════"

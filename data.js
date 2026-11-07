@@ -32,14 +32,14 @@
  * ============================================================ */
 
 const CATEGORIES = {
-  framework: { label: '框架 / SDK / 库', color: '#4f8cff' },
-  ai: { label: 'AI / LLM 机器人', color: '#a06bff' },
-  manage: { label: '群组 / 频道管理', color: '#22c8a0' },
-  forward: { label: '转发 / 自动化', color: '#f5a524' },
-  shop: { label: '电商 / Mini App', color: '#ff6b9d' },
-  tool: { label: '工具 / 文件 / 娱乐', color: '#38bdf8' },
-  growth: { label: '营销群发（高风险）', color: '#ff5d5d' },
-  awesome: { label: '资源 / 导航列表', color: '#8a94a6' },
+  framework: { label: '框架 / SDK / 库', color: '#3f6fb0' },
+  ai: { label: 'AI / LLM 机器人', color: '#6b4fbb' },
+  manage: { label: '群组 / 频道管理', color: '#2f8f4e' },
+  forward: { label: '转发 / 自动化', color: '#a8770b' },
+  shop: { label: '电商 / Mini App', color: '#b3557f' },
+  tool: { label: '工具 / 文件 / 娱乐', color: '#0f7b8a' },
+  growth: { label: '营销群发（高风险）', color: '#c0392b' },
+  awesome: { label: '资源 / 导航列表', color: '#8c8c96' },
 };
 
 const LANGS = ['Python', 'Go', 'Node.js', 'TypeScript', 'JavaScript', 'PHP', 'Markdown', 'n8n', '其他'];

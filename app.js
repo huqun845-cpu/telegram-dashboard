@@ -11,17 +11,17 @@
 /* ============================================================
  * 0. 常量
  * ============================================================ */
-const K = { favs: 'tg.favs', notes: 'tg.notes', custom: 'tg.custom', cand: 'tg.cand', w: 'tg.w', scen: 'tg.scenario', theme: 'tg.theme2' };
+const K = { favs: 'tg.favs', notes: 'tg.notes', custom: 'tg.custom', cand: 'tg.cand', w: 'tg.w', scen: 'tg.scenario', theme: 'tg.theme3' };
 
 const COMM_LABEL = { yes: '可商用', caution: '有条件商用', no: '不建议商用', unknown: '待核实' };
 const COMM_CLASS = { yes: 'b-ok', caution: 'b-warn', no: 'b-dang', unknown: 'b-mute' };
 const MAINT_LABEL = { active: '活跃', maintained: '维护中', stale: '停更', unknown: '待核实' };
 const MAINT_CLASS = { active: 'b-ok', maintained: 'b-conf', stale: 'b-dang', unknown: 'b-mute' };
 const LICKIND_LABEL = { permissive: '宽松许可', copyleft: '传染性许可', unknown: '未知/无协议' };
-const LICKIND_COLOR = { permissive: '#8fd694', copyleft: '#f0c674', unknown: '#7c7c7c' };
+const LICKIND_COLOR = { permissive: '#2f8f4e', copyleft: '#a8770b', unknown: '#8c8c96' };
 const RISK_LABEL = { normal: '正常', marketing: '营销群发', gambling: '赌博' };
-/* 图表色：OSS Insight 式的柠檬黄 + 中性灰阶，不用彩虹色 */
-const LANG_COLORS = ['#ffe895', '#e6c96f', '#c9ae5f', '#a3a3a3', '#c4c4c4', '#7c7c7c', '#f0dca6', '#b09a63', '#8e8e8e'];
+/* 图表色：琥珀金 + 中性灰，白底可辨识，不用彩虹色 */
+const LANG_COLORS = ['#a8770b', '#c99a12', '#8a6a10', '#b8941a', '#6f6f78', '#8c8c96', '#7a6410', '#a8a8b0', '#5c5c64'];
 
 /* 每日 Star 快照（history.js 注入）。缺失时整个趋势模块自动降级为不显示 */
 const HIST = (typeof window !== 'undefined' && Array.isArray(window.STAR_HISTORY)) ? window.STAR_HISTORY : [];
@@ -204,11 +204,11 @@ const FRESH_OPTIONS = [['all', '全部'], ['d30', '近 30 天'], ['d90', '近 90
 const GROUPS = [
   { key: 'cats', title: '分类', field: 'cat', source: () => Object.keys(CATEGORIES).map(k => [k, CATEGORIES[k].label, CATEGORIES[k].color]) },
   { key: 'langs', title: '技术栈', field: 'lang', source: () => [...new Set(DATA.map(p => p.lang))].sort().map(k => [k, k, null]) },
-  { key: 'comms', title: '商用友好度', field: 'comm', source: () => Object.keys(COMM_LABEL).map(k => [k, COMM_LABEL[k], k === 'yes' ? '#8fd694' : k === 'caution' ? '#f0c674' : k === 'no' ? '#ff9b9b' : '#7c7c7c']) },
+  { key: 'comms', title: '商用友好度', field: 'comm', source: () => Object.keys(COMM_LABEL).map(k => [k, COMM_LABEL[k], k === 'yes' ? '#2f8f4e' : k === 'caution' ? '#a8770b' : k === 'no' ? '#c0392b' : '#8c8c96']) },
   { key: 'licKinds', title: '许可证类型', field: 'licKind', source: () => Object.keys(LICKIND_LABEL).map(k => [k, LICKIND_LABEL[k], LICKIND_COLOR[k]]) },
-  { key: 'maints', title: '维护状态', field: 'maint', source: () => Object.keys(MAINT_LABEL).map(k => [k, MAINT_LABEL[k], k === 'active' ? '#8fd694' : k === 'maintained' ? '#a9c7e8' : k === 'stale' ? '#ff9b9b' : '#7c7c7c']) },
-  { key: 'zhs', title: '中文友好', field: 'zh', source: () => [['yes', '中文文档 / 中文社区', '#8fd694'], ['no', '仅英文', '#7c7c7c']] },
-  { key: 'risks', title: '风险等级', field: 'risk', source: () => Object.keys(RISK_LABEL).map(k => [k, RISK_LABEL[k], k === 'normal' ? '#8fd694' : k === 'marketing' ? '#f0c674' : '#ff9b9b']) },
+  { key: 'maints', title: '维护状态', field: 'maint', source: () => Object.keys(MAINT_LABEL).map(k => [k, MAINT_LABEL[k], k === 'active' ? '#2f8f4e' : k === 'maintained' ? '#3f6fb0' : k === 'stale' ? '#c0392b' : '#8c8c96']) },
+  { key: 'zhs', title: '中文友好', field: 'zh', source: () => [['yes', '中文文档 / 中文社区', '#2f8f4e'], ['no', '仅英文', '#8c8c96']] },
+  { key: 'risks', title: '风险等级', field: 'risk', source: () => Object.keys(RISK_LABEL).map(k => [k, RISK_LABEL[k], k === 'normal' ? '#2f8f4e' : k === 'marketing' ? '#a8770b' : '#c0392b']) },
 ];
 
 /* 智能预设 */
@@ -417,18 +417,18 @@ function renderCharts(list) {
 
   barChart($('#chartMaint'), Object.keys(MAINT_LABEL).map(k => ({
     key: k, label: MAINT_LABEL[k],
-    color: k === 'active' ? '#8fd694' : k === 'maintained' ? '#a9c7e8' : k === 'stale' ? '#ff9b9b' : '#7c7c7c',
+    color: k === 'active' ? '#2f8f4e' : k === 'maintained' ? '#3f6fb0' : k === 'stale' ? '#c0392b' : '#8c8c96',
     value: list.filter(p => p.maint === k).length, active: state.maints.has(k),
   })), v => { toggleSet('maints', v); render(); });
 
   // 更新时间分桶（真实提交）
   const buckets = [
-    { key: 'b30', label: '1 个月内', max: 30, color: '#8fd694' },
-    { key: 'b90', label: '1-3 个月', max: 90, color: '#a9c7e8' },
-    { key: 'b180', label: '3-6 个月', max: 180, color: '#c0b3f0' },
-    { key: 'b365', label: '6-12 个月', max: 365, color: '#f0c674' },
-    { key: 'bold', label: '1 年以上', max: Infinity, color: '#ff9b9b' },
-    { key: 'none', label: '待核实', max: null, color: '#7c7c7c' },
+    { key: 'b30', label: '1 个月内', max: 30, color: '#2f8f4e' },
+    { key: 'b90', label: '1-3 个月', max: 90, color: '#3f6fb0' },
+    { key: 'b180', label: '3-6 个月', max: 180, color: '#6b4fbb' },
+    { key: 'b365', label: '6-12 个月', max: 365, color: '#a8770b' },
+    { key: 'bold', label: '1 年以上', max: Infinity, color: '#c0392b' },
+    { key: 'none', label: '待核实', max: null, color: '#8c8c96' },
   ];
   const prev = buckets.map(b => ({ ...b, prev: b.max })).map((b, i) => b);
   const rows = buckets.map((b, i) => {
@@ -699,7 +699,7 @@ function openDrawer(id) {
       <div class="scorerow"><b class="score big ${scoreClass(s.total)}">${s.total}</b>
         <div class="scorebars">
           ${[['商用许可', s.lic], ['中文文档', s.zh], ['维护活跃', s.act], ['功能匹配', s.rel]].map(([k, v]) =>
-            `<div class="sb"><span>${k}</span><i><b style="width:${v}%;background:${v >= 75 ? '#8fd694' : v >= 55 ? '#a9c7e8' : v >= 40 ? '#f0c674' : '#ff9b9b'}"></b></i><em>${v}</em></div>`).join('')}
+            `<div class="sb"><span>${k}</span><i><b style="width:${v}%;background:${v >= 75 ? '#2f8f4e' : v >= 55 ? '#3f6fb0' : v >= 40 ? '#a8770b' : '#c0392b'}"></b></i><em>${v}</em></div>`).join('')}
         </div></div>
       <div class="hint">权重可在左侧调整；场景：${esc(SCENARIOS[state.scenario].label)}</div>
     </div>
@@ -1037,8 +1037,9 @@ function init() {
     ? `还有 ${missing} 个仓库是推断值，运行 node fetch-github-meta.mjs --missing && node bake-meta.mjs 可补齐。`
     : '全部仓库均已核实';
 
-  // 主题
-  const t = store.get(K.theme, null); if (t) document.documentElement.dataset.theme = t;
+  // 主题：默认浅色，记住用户手动切换过的选择
+  const t = store.get(K.theme, 'light');
+  document.documentElement.dataset.theme = t === 'dark' ? 'dark' : 'light';
   $('#btnTheme').onclick = () => {
     const cur = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
     document.documentElement.dataset.theme = cur; store.set(K.theme, cur);
