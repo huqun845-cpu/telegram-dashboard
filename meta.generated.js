@@ -1,6 +1,6 @@
 /* meta.generated.js — 由 fetch-github-meta.mjs 自动生成
  * 已有真实数据：86 / 89 个仓库
- * 最新一次提交时间：2026-11-08T21:42:51Z
+ * 最新一次提交时间：2026-11-10T00:01:13Z
  */
 window.GITHUB_META = {
   "chanadmin": {
@@ -35,12 +35,12 @@ window.GITHUB_META = {
     "defaultBranch": "master"
   },
   "ptb": {
-    "pushedAt": "2026-11-01T02:46:46Z",
-    "updatedAt": "2026-11-08T20:38:23Z",
+    "pushedAt": "2026-11-09T08:09:21Z",
+    "updatedAt": "2026-11-10T01:21:32Z",
     "createdAt": "2015-07-07T15:30:39Z",
-    "stars": 29565,
-    "forks": 6183,
-    "openIssues": 40,
+    "stars": 29567,
+    "forks": 6184,
+    "openIssues": 38,
     "license": "GPL-3.0",
     "licenseKind": "copyleft",
     "archived": false,
@@ -57,12 +57,12 @@ window.GITHUB_META = {
     "defaultBranch": "master"
   },
   "langbot": {
-    "pushedAt": "2026-11-08T17:48:32Z",
-    "updatedAt": "2026-11-09T00:48:28Z",
+    "pushedAt": "2026-11-09T19:06:12Z",
+    "updatedAt": "2026-11-10T01:06:11Z",
     "createdAt": "2022-12-07T08:48:02Z",
-    "stars": 18822,
-    "forks": 1693,
-    "openIssues": 133,
+    "stars": 18855,
+    "forks": 1694,
+    "openIssues": 129,
     "license": "Apache-2.0",
     "licenseKind": "permissive",
     "archived": false,
@@ -95,9 +95,9 @@ window.GITHUB_META = {
   },
   "tgcf": {
     "pushedAt": "2024-05-06T09:49:13Z",
-    "updatedAt": "2026-11-05T22:09:53Z",
+    "updatedAt": "2026-11-09T09:03:10Z",
     "createdAt": "2020-11-25T03:05:00Z",
-    "stars": 1629,
+    "stars": 1630,
     "forks": 870,
     "openIssues": 93,
     "license": "MIT",
@@ -220,12 +220,12 @@ window.GITHUB_META = {
     "defaultBranch": "main"
   },
   "aiogram": {
-    "pushedAt": "2026-11-08T14:03:27Z",
-    "updatedAt": "2026-11-08T20:03:11Z",
+    "pushedAt": "2026-11-10T00:01:13Z",
+    "updatedAt": "2026-11-10T00:56:57Z",
     "createdAt": "2017-11-18T14:11:13Z",
-    "stars": 5920,
-    "forks": 974,
-    "openIssues": 64,
+    "stars": 5923,
+    "forks": 975,
+    "openIssues": 85,
     "license": "MIT",
     "licenseKind": "permissive",
     "archived": false,
@@ -271,11 +271,11 @@ window.GITHUB_META = {
     "defaultBranch": "v4"
   },
   "dsbot": {
-    "pushedAt": "2026-11-06T02:01:04Z",
-    "updatedAt": "2026-11-08T08:32:48Z",
+    "pushedAt": "2026-11-09T09:13:54Z",
+    "updatedAt": "2026-11-09T09:14:01Z",
     "createdAt": "2025-02-17T10:58:11Z",
     "stars": 1787,
-    "forks": 260,
+    "forks": 261,
     "openIssues": 2,
     "license": "MIT",
     "licenseKind": "permissive",
@@ -324,7 +324,7 @@ window.GITHUB_META = {
   },
   "donskoyshop": {
     "pushedAt": "2025-08-24T20:06:25Z",
-    "updatedAt": "2026-11-06T18:47:20Z",
+    "updatedAt": "2026-11-09T19:09:58Z",
     "createdAt": "2020-09-12T21:38:56Z",
     "stars": 514,
     "forks": 154,
@@ -407,12 +407,12 @@ window.GITHUB_META = {
     "defaultBranch": "main"
   },
   "gotgbot": {
-    "pushedAt": "2026-11-07T15:42:36Z",
+    "pushedAt": "2026-11-09T19:27:31Z",
     "updatedAt": "2026-11-08T14:04:18Z",
     "createdAt": "2017-09-16T11:40:51Z",
     "stars": 724,
     "forks": 144,
-    "openIssues": 9,
+    "openIssues": 10,
     "license": "MIT",
     "licenseKind": "permissive",
     "archived": false,
@@ -491,9 +491,9 @@ window.GITHUB_META = {
   },
   "amirabot": {
     "pushedAt": "2026-10-01T21:34:54Z",
-    "updatedAt": "2026-11-08T21:16:02Z",
+    "updatedAt": "2026-11-10T00:47:03Z",
     "createdAt": "2026-09-11T13:38:49Z",
-    "stars": 249,
+    "stars": 250,
     "forks": 443,
     "openIssues": 21,
     "license": null,
@@ -685,7 +685,7 @@ window.GITHUB_META = {
     "updatedAt": "2026-11-08T01:38:02Z",
     "createdAt": "2023-12-30T14:08:46Z",
     "stars": 157,
-    "forks": 81,
+    "forks": 80,
     "openIssues": 1,
     "license": "MIT",
     "licenseKind": "permissive",
@@ -876,9 +876,9 @@ window.GITHUB_META = {
   },
   "groups": {
     "pushedAt": "2025-02-05T03:17:34Z",
-    "updatedAt": "2026-11-08T12:39:29Z",
+    "updatedAt": "2026-11-09T14:46:22Z",
     "createdAt": "2025-03-24T03:11:04Z",
-    "stars": 89,
+    "stars": 91,
     "forks": 5,
     "openIssues": 0,
     "license": "Apache-2.0",
@@ -891,12 +891,12 @@ window.GITHUB_META = {
     "defaultBranch": "main"
   },
   "gtgbot": {
-    "pushedAt": "2026-11-02T09:58:10Z",
-    "updatedAt": "2026-11-07T04:51:08Z",
+    "pushedAt": "2026-11-09T17:12:34Z",
+    "updatedAt": "2026-11-09T17:12:38Z",
     "createdAt": "2022-04-25T15:57:38Z",
-    "stars": 1877,
-    "forks": 165,
-    "openIssues": 14,
+    "stars": 1878,
+    "forks": 166,
+    "openIssues": 15,
     "license": "MIT",
     "licenseKind": "permissive",
     "archived": false,
@@ -914,12 +914,12 @@ window.GITHUB_META = {
     "defaultBranch": "main"
   },
   "phpsdk": {
-    "pushedAt": "2026-08-20T10:35:28Z",
-    "updatedAt": "2026-11-06T02:31:36Z",
+    "pushedAt": "2026-11-09T12:23:27Z",
+    "updatedAt": "2026-11-09T12:23:33Z",
     "createdAt": "2015-06-29T07:12:35Z",
     "stars": 3300,
     "forks": 676,
-    "openIssues": 29,
+    "openIssues": 26,
     "license": "BSD-3-Clause",
     "licenseKind": "permissive",
     "archived": false,
@@ -1028,11 +1028,11 @@ window.GITHUB_META = {
     "defaultBranch": "main"
   },
   "musebot": {
-    "pushedAt": "2026-11-06T02:01:04Z",
-    "updatedAt": "2026-11-08T08:32:48Z",
+    "pushedAt": "2026-11-09T09:13:54Z",
+    "updatedAt": "2026-11-09T09:14:01Z",
     "createdAt": "2025-02-17T10:58:11Z",
     "stars": 1787,
-    "forks": 260,
+    "forks": 261,
     "openIssues": 2,
     "license": "MIT",
     "licenseKind": "permissive",
@@ -1072,9 +1072,9 @@ window.GITHUB_META = {
   },
   "wechatbot": {
     "pushedAt": "2026-09-04T02:33:31Z",
-    "updatedAt": "2026-11-08T22:10:22Z",
+    "updatedAt": "2026-11-10T01:14:02Z",
     "createdAt": "2021-12-15T06:04:18Z",
-    "stars": 11531,
+    "stars": 11539,
     "forks": 1307,
     "openIssues": 121,
     "license": "MIT",
@@ -1164,11 +1164,11 @@ window.GITHUB_META = {
     "defaultBranch": "main"
   },
   "parsehub": {
-    "pushedAt": "2026-11-02T16:04:44Z",
-    "updatedAt": "2026-11-08T22:38:08Z",
+    "pushedAt": "2026-11-09T09:37:56Z",
+    "updatedAt": "2026-11-09T11:35:48Z",
     "createdAt": "2024-09-24T14:36:19Z",
-    "stars": 822,
-    "forks": 72,
+    "stars": 823,
+    "forks": 73,
     "openIssues": 0,
     "license": "MIT",
     "licenseKind": "permissive",
@@ -1185,12 +1185,12 @@ window.GITHUB_META = {
     "defaultBranch": "main"
   },
   "lobsterai": {
-    "pushedAt": "2026-11-08T10:33:21Z",
-    "updatedAt": "2026-11-08T17:30:44Z",
+    "pushedAt": "2026-11-09T15:57:34Z",
+    "updatedAt": "2026-11-09T15:26:56Z",
     "createdAt": "2026-02-12T09:56:20Z",
-    "stars": 6175,
+    "stars": 6176,
     "forks": 978,
-    "openIssues": 176,
+    "openIssues": 174,
     "license": "MIT",
     "licenseKind": "permissive",
     "archived": false,
@@ -1305,8 +1305,8 @@ window.GITHUB_META = {
     "defaultBranch": "dev"
   },
   "alita": {
-    "pushedAt": "2026-11-04T06:58:29Z",
-    "updatedAt": "2026-11-08T10:06:53Z",
+    "pushedAt": "2026-11-09T15:28:48Z",
+    "updatedAt": "2026-11-09T15:28:56Z",
     "createdAt": "2020-10-26T04:57:50Z",
     "stars": 255,
     "forks": 325,
@@ -1406,7 +1406,7 @@ window.GITHUB_META = {
   },
   "mukesh": {
     "pushedAt": "2025-08-24T06:49:41Z",
-    "updatedAt": "2026-11-06T13:56:32Z",
+    "updatedAt": "2026-11-09T07:19:02Z",
     "createdAt": "2022-07-21T06:56:55Z",
     "stars": 115,
     "forks": 360,
@@ -1436,9 +1436,9 @@ window.GITHUB_META = {
   },
   "tgforwarder": {
     "pushedAt": "2026-02-10T08:51:56Z",
-    "updatedAt": "2026-11-08T06:20:14Z",
+    "updatedAt": "2026-11-09T16:14:00Z",
     "createdAt": "2025-01-10T09:35:01Z",
-    "stars": 1320,
+    "stars": 1321,
     "forks": 254,
     "openIssues": 5,
     "license": "GPL-3.0",
@@ -1609,9 +1609,9 @@ window.GITHUB_META = {
   },
   "raulshop": {
     "pushedAt": "2025-02-16T13:57:09Z",
-    "updatedAt": "2026-11-02T13:56:33Z",
+    "updatedAt": "2026-11-09T05:56:43Z",
     "createdAt": "2020-10-17T12:01:10Z",
-    "stars": 129,
+    "stars": 130,
     "forks": 49,
     "openIssues": 3,
     "license": "MIT",
@@ -1645,9 +1645,9 @@ window.GITHUB_META = {
   },
   "w1pngshop": {
     "pushedAt": "2024-04-13T12:42:26Z",
-    "updatedAt": "2026-11-03T22:03:45Z",
+    "updatedAt": "2026-11-09T10:26:26Z",
     "createdAt": "2021-11-27T17:56:16Z",
-    "stars": 184,
+    "stars": 183,
     "forks": 52,
     "openIssues": 3,
     "license": "GPL-3.0",
@@ -1757,10 +1757,10 @@ window.GITHUB_META = {
   },
   "fileshare": {
     "pushedAt": "2025-12-28T18:14:10Z",
-    "updatedAt": "2026-11-06T05:06:23Z",
+    "updatedAt": "2026-11-09T20:19:30Z",
     "createdAt": "2021-05-05T12:15:27Z",
-    "stars": 2415,
-    "forks": 6419,
+    "stars": 2416,
+    "forks": 6420,
     "openIssues": 31,
     "license": "GPL-3.0",
     "licenseKind": "copyleft",
@@ -1877,7 +1877,7 @@ window.GITHUB_META = {
     "defaultBranch": "main"
   },
   "hamster": {
-    "pushedAt": "2026-11-02T22:23:11Z",
+    "pushedAt": "2026-11-09T21:21:30Z",
     "updatedAt": "2026-06-14T05:15:03Z",
     "createdAt": "2024-08-06T11:29:11Z",
     "stars": 11,
@@ -2067,8 +2067,8 @@ window.GITHUB_META = {
     "defaultBranch": "main"
   },
   "hermanosender": {
-    "pushedAt": "2026-11-08T21:42:51Z",
-    "updatedAt": "2026-11-08T21:42:55Z",
+    "pushedAt": "2026-11-09T20:25:56Z",
+    "updatedAt": "2026-11-09T20:26:00Z",
     "createdAt": "2025-11-07T17:48:50Z",
     "stars": 0,
     "forks": 0,
@@ -2112,12 +2112,12 @@ window.GITHUB_META = {
     "defaultBranch": "master"
   },
   "awesometg": {
-    "pushedAt": "2026-11-02T23:40:55Z",
-    "updatedAt": "2026-11-08T15:17:10Z",
+    "pushedAt": "2026-11-09T23:32:24Z",
+    "updatedAt": "2026-11-09T23:32:32Z",
     "createdAt": "2016-07-01T21:11:51Z",
-    "stars": 6213,
-    "forks": 692,
-    "openIssues": 38,
+    "stars": 6215,
+    "forks": 691,
+    "openIssues": 32,
     "license": null,
     "licenseKind": "unknown",
     "archived": false,
@@ -2157,9 +2157,9 @@ window.GITHUB_META = {
   },
   "itgoyo": {
     "pushedAt": "2026-10-27T03:27:36Z",
-    "updatedAt": "2026-11-08T08:38:01Z",
+    "updatedAt": "2026-11-09T13:17:40Z",
     "createdAt": "2024-05-29T15:38:27Z",
-    "stars": 2055,
+    "stars": 2056,
     "forks": 114,
     "openIssues": 7,
     "license": null,
