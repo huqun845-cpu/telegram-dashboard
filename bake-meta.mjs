@@ -62,6 +62,8 @@ function commOf(licKind, original) {
 }
 
 const stats = { baked: 0, licChanged: 0, maintChanged: 0, commChanged: 0, noLicense: 0, archived: 0, autoNoted: 0, dead: 0 };
+/* 结构变化明细，供推送按「哪个仓库、从什么变成什么」逐条报，而不是只报个数 */
+const details = { lic: [], maint: [], comm: [], archived: [], dead: [] };
 const DEAD_NOTE = '⚠️ 仓库已不存在（GitHub API 返回 404，可能已删除或改名），Star / 提交时间已失效，许可证为历史快照';
 const baked = PROJECTS.map(p => {
   const m = okMeta[p.id];
@@ -70,6 +72,7 @@ const baked = PROJECTS.map(p => {
        若原样保留旧值，面板会把「查无此人」显示成「0 star、还能查到提交时间」，等于伪造数据。 */
     if (p.dead || p.src === 'api') {
       stats.dead++;
+      details.dead.push(p.id);
       // 已有手写失效说明就原样保留（可能补充了「作者账号已注销」等关键信息），避免被覆盖
       const hadNote = /仓库已不存在|已失效/.test(String(p.note || ''));
       return {
@@ -86,14 +89,26 @@ const baked = PROJECTS.map(p => {
     ? (/^(MIT|Apache|BSD|ISC|Unlicense|0BSD|CC0)/i.test(m.license) ? 'permissive' : /GPL/i.test(m.license) ? 'copyleft' : 'unknown')
     : 'unknown');
 
-  if (o.lic !== m.license) stats.licChanged++;
+  if (o.lic !== m.license) {
+    stats.licChanged++;
+    details.lic.push({ id: p.id, from: o.lic, to: m.license || null });
+  }
   if (!m.license) stats.noLicense++;
-  if (m.archived) stats.archived++;
+  if (m.archived) {
+    stats.archived++;
+    if (!p.archived) details.archived.push({ id: p.id });
+  }
 
   const newMaint = maintOf(m);
   const newComm = commOf(licKind, o.comm);
-  if (o.maint !== newMaint && newMaint) stats.maintChanged++;
-  if (o.comm !== newComm) stats.commChanged++;
+  if (o.maint !== newMaint && newMaint) {
+    stats.maintChanged++;
+    details.maint.push({ id: p.id, from: o.maint || null, to: newMaint });
+  }
+  if (o.comm !== newComm) {
+    stats.commChanged++;
+    details.comm.push({ id: p.id, from: o.comm || null, to: newComm });
+  }
 
   o.lic = m.license || null;
   o.licKind = licKind;
@@ -122,6 +137,15 @@ console.log(`📊 meta.json 中有效数据：${Object.keys(okMeta).length} 个 
 console.log(`   许可证修正 ${stats.licChanged} · 维护状态修正 ${stats.maintChanged} · 商用结论修正 ${stats.commChanged}`);
 console.log(`   其中无协议 ${stats.noLicense} 个 · 已归档 ${stats.archived} 个 · 自动补备注 ${stats.autoNoted} 条`);
 if (stats.dead) console.log(`   ⚠️ 失效仓库 ${stats.dead} 个：已标 dead:true 并清空 Star/提交时间 → ${PROJECTS.filter(p => (!okMeta[p.id]) && (p.dead || p.src === 'api')).map(p => p.id).join(', ')}`);
+
+/* 结构变化明细落盘，供推送按「哪个仓库、从什么变成什么」逐条报 */
+await writeFile('/tmp/tg_changes.json', JSON.stringify({
+  generatedAt: new Date().toISOString(),
+  total: PROJECTS.length,
+  ok: stats.baked,
+  stats,
+  details,
+}, null, 1));
 
 /* ---------- 3. 序列化（单引号 + 转义） ---------- */
 const esc = s => String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
