@@ -117,6 +117,30 @@ fi
 # Star 快照只在真正要发布时写：无变化的日子不必为趋势图多推一次线上
 node snapshot-history.mjs || warn "Star 快照写入失败，趋势图本次不更新（不影响数据发布）"
 
+# 发布前自检：本机 gh 登了多个账号时，活跃账号必须是 origin 的属主，
+# 否则 git push 会 403。2026-11-13 实际踩到：活跃的是 kjsssjj，远端属于 huqun845-cpu。
+ensure_gh_owner() {
+  local origin owner active
+  origin=$(git remote get-url origin 2>/dev/null) || return 0
+  owner=$(printf '%s' "$origin" | sed -n 's#.*github\.com[:/]\([^/]*\)/.*#\1#p')
+  [ -z "$owner" ] && return 0
+  active=$(gh api user -q .login 2>/dev/null)
+  if [ -z "$active" ]; then
+    warn "拿不到 gh 当前账号，跳过属主自检"
+    return 0
+  fi
+  if [ "$active" = "$owner" ]; then
+    ok "gh 活跃账号与远端属主一致：$owner"
+    return 0
+  fi
+  if gh auth switch --user "$owner" >/dev/null 2>&1; then
+    ok "gh 活跃账号 $active ≠ 远端属主 $owner，已自动切换到 $owner"
+  else
+    warn "gh 活跃账号 $active ≠ 远端属主 $owner，自动切换失败（$owner 未在本机登录）"
+  fi
+}
+ensure_gh_owner
+
 bold "▶ [4/4] 发布到线上"
 # 发布失败必须以非 0 退出，否则定时任务会误以为「已上线」
 if ! ./deploy.sh gh; then
